@@ -772,6 +772,12 @@ contains
   !  if (abtype .ne. 'ener') then
       ! Extract the forces from the 'temp.engrad' file.
       !
+      there = .false.
+      inquire(file="temp.engrad", exist=there)
+      if (.not. there) then
+        print *, 'Missing file temp.engrad, ORCA calculation must have failed.'
+        stop 
+      endif
       string1 = "grep 'The current gradient' temp.engrad -A"
       write(cnum,'(I5)')3*cx%na+2
       string3 = " > f.out"
