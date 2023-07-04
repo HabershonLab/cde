@@ -6,8 +6,8 @@ FC = ifort
 
 ifeq "$(FC)" "gfortran"
 MODCMD = -J
-FFLAGS = -O3 -I"/warwick/desktop/2018/software/OpenBLAS/0.3.12-GCC-10.2.0/include"
-LIBS = -L"/warwick/desktop/2018/software/OpenBLAS/0.3.12-GCC-10.2.0/lib" -lopenblas
+FFLAGS = -O3
+LIBS = -lopenblas
 else ifeq "$(FC)" "ifort"
 MODCMD = -module
 FFLAGS = -O3 -i8 -I"${MKLROOT}/include"
