@@ -1,7 +1,7 @@
 !
 !***************************************************************************************
 !
-!> @brief Contains routines for automatic determination of a reaction-mechanism
+!> Contains routines for automatic determination of a reaction-mechanism
 !! connecting two distinct (user-input) structures.
 !!
 !! The method employed here has been reported in:

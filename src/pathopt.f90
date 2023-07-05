@@ -3,7 +3,7 @@
 !
 !***************************************************************************************
 !
-!> @brief Contains routines for path optimization, including CINEB.
+!> Contains routines for path optimization, including CINEB.
 !
 !***************************************************************************************
 !

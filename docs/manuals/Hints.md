@@ -1,4 +1,6 @@
-## Hints and tips {#hints}
+title: Hints & Tips
+
+# Hints & Tips
 
 ### Hints on input files.
 

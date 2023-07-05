@@ -1,4 +1,6 @@
-### PES templates {#Templates}
+title: Calculator Template Examples
+
+# Calculator Template Examples
 
 This page gives several examples of template files for PES evaluation or geometry evaluation.
 

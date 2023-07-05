@@ -1,4 +1,6 @@
-## Forbid-file example {#forbid}
+title: Forbid file example
+
+# Forbid-file example
 
 The forbid-file is used in GDS to define which graph-patterns cannot be generated as new reaction-path end-points during each GDS graph-change step.
 

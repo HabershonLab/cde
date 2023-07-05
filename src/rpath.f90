@@ -1,7 +1,7 @@
 !
 !***************************************************************************************
 !
-!> @brief Reaction-path object definition.
+!> Reaction-path object definition.
 !
 !> Defines the reaction-path object type. This object is
 !! a string of nimage snapshots along a reaction-path.

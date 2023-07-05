@@ -1,10 +1,12 @@
-### PES evaluations {#PES}
+title: Calculators
 
-CDE can call several external programs to obtain energies and forces on atoms during GDS and NEB runs. This section describes how this is managed, and how input files can be set-up to run different external codes.
+# Calculators
 
-## PES types
+CDE can call several external programs to calculate energies and forces on atoms during GDS and NEB runs. This section describes how this is managed, and how input files can be set-up to run different external codes.
 
-- The potential energy surface (PES) type to be used during a CDE-based calculation is indicated through the variables **pestype** and **pesopttype**.
+## Calculator types
+
+- The potential energy surface (PES) calculator type to be used during a CDE-based calculation is indicated through the variables **pestype** and **pesopttype**.
 
 - The **pestype** is used whenever the code requires a single-point energy evaluation.
 
@@ -75,7 +77,6 @@ To make sure everything runs smoothly, there are two useful options:
 then running the command *orca* will then execute *~/programs/stuff/orca/bin/orca*, which should indeed correspond to an executable binary.
 
 This means that you can then use the following in your CDE input files:
-
 
     pesexecutable orca
     pesoptexecutable orca

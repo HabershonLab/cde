@@ -1,4 +1,6 @@
-## Setting up CDE ## {#setup}
+title: Setup
+
+# Setting up CDE
 
 ## Organization of CDE
 

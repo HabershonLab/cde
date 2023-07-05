@@ -1,9 +1,9 @@
 !
 !***************************************************************************************
 !
-!> @brief Chemical structure object definition.
+!> Chemical structure object definition.
 !
-!> Defines the chemical structure (cxs) object type.
+!! Defines the chemical structure (cxs) object type.
 !
 !***************************************************************************************
 !

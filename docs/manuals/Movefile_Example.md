@@ -1,4 +1,6 @@
-## Movefile example {#moves}
+title: Movefile Example
+
+# Movefile example
 
 The move-file is used in GDS to define which graph-moves can be used to generate new reaction-path end-points during each GDS graph-change step.
 

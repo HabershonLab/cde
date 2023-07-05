@@ -1,7 +1,7 @@
 
 !***************************************************************************************
 !
-!> @brief constants definition file, containing importance universal values used
+!> Constants definition file, containing importance universal values used
 !! throughout code.
 !!
 !! **You should avoid changing these values unless you are absolutely sure you know

@@ -1,9 +1,9 @@
 !
 !***************************************************************************************
 !
-!> @brief Potential energy surface calculations.
+!> Potential energy surface calculations.
 !
-!> Defines subroutines for evaluating energies and forces using various
+!! Defines subroutines for evaluating energies and forces using various
 !! external codes.
 !
 !***************************************************************************************

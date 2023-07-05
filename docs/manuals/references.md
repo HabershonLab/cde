@@ -1,4 +1,6 @@
-## References {#References}
+title: References
+
+# References
 
 ## Graph-driven sampling methodology
 

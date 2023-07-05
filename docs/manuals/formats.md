@@ -1,4 +1,6 @@
-### I/O structure formats {#formats}
+title: IO Structure Formats
+
+# I/O structure formats
 
 Some important things to note about structure formats used in CDE:
 
