@@ -2,7 +2,7 @@
 
 .SUFFIXES:
 EXE = ./bin/cde.x
-FC = ifort
+FC ?= 'gfortran'
 
 ifeq "$(FC)" "gfortran"
 MODCMD = -J
