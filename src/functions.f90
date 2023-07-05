@@ -1,67 +1,65 @@
 
+! ***************************************************************************************
+!|
+! Functions
 !
-!***************************************************************************************
+! Library of generic functions used throughout the code.
 !
-!> Functions
-!
-!! Library of Generic Function
-!
-!***************************************************************************************
-!
+! **************************************************************************************
 
 Module functions
   use constants
 
 contains
 
-!***********************************************************************
-!> is_numeric
-!!
-!! checks to see if input is number
-!!
-!********************************************************************
+! *******************************************************************
+! is_numeric(string)
+!|
+! Checks to see if input string is a number.
+!
+! *******************************************************************
   function is_numeric(string)
     implicit none
     character(len=1), intent(in) :: string
-    logical :: is_numeric
+    logical :: is_numeric                   !! Whether the input string is a number.
     is_numeric = .false.
     if (string.eq.'0') then
-       is_numeric = .true.
+      is_numeric = .true.
     else if (string.eq.'1') then
-       is_numeric = .true.
+      is_numeric = .true.
     else if (string.eq.'2') then
-       is_numeric = .true.
+      is_numeric = .true.
     else if (string.eq.'3') then
-       is_numeric = .true.
+      is_numeric = .true.
     else if (string.eq.'4') then
-       is_numeric = .true.
+      is_numeric = .true.
     else if (string.eq.'5') then
-       is_numeric = .true.
+      is_numeric = .true.
     else if (string.eq.'6') then
-       is_numeric = .true.
+      is_numeric = .true.
     else if (string.eq.'7') then
-       is_numeric = .true.
+      is_numeric = .true.
     else if (string.eq.'8') then
-       is_numeric = .true.
+      is_numeric = .true.
     else if (string.eq.'9') then
-       is_numeric = .true.
+      is_numeric = .true.
     endif
   end function is_numeric
 
 
+! ***********************************************************************
+! xproduct(a, b)
+!|
+! Performs cross product between 3D vectors, not for general space.
+! Returns a length 3 vector.
 !
-!************************************************************************
-!> xproduct
-!!
-!! cross product between 3d vectors, not for general space. returns vector
-!!
-!! - a,b: vectors
-!!
-!************************************************************************
-!
+! ***********************************************************************
   function xproduct(a, b)
     implicit none
-    double precision :: xproduct(3), a(3), b(3)
+
+    double precision, intent(in) :: a(3), b(3)    !! Vectors of xyz coords.
+    double precision :: xproduct(3)               !! Cross product of a and b.
+
     xproduct(1) = a(2)*b(3) - a(3)*b(2)
     xproduct(2) = a(3)*b(1) - a(1)*b(3)
     xproduct(3) = a(1)*b(2) - a(2)*b(1)
@@ -69,21 +67,18 @@ contains
   end function xproduct
 
 
+  ! ************************************************************************
+  ! LabelToNumber(label)
+  !|
+  ! Converts an input atomic label into a number.
   !
-  !************************************************************************
-  !> LabelToNumber
-  !!
-  !! Converts an input atomic label into a number.
-  !!
-  !! - label: the input atomic label.
-  !!
-  !************************************************************************
-  !
+  ! ************************************************************************
   Function LabelToNumber(label)
     implicit none
-    integer :: LabelToNumber
-    character (len = 2) :: label
 
+    character(len = 2), intent(in) :: label     !! Atom label.
+    integer :: LabelToNumber                    !! Atomic number of input label.
+    
     select case (trim(label))
 
     case('H')
@@ -355,20 +350,18 @@ contains
     return
   end Function LabelToNumber
 
+
+  ! ************************************************************************
+  ! NumberToLabel(num)
+  !|
+  ! Converts an input atomic number into an atom label.
   !
-  !************************************************************************
-  !> NumberToLabel
-  !!
-  !! Converts an input atomic number into label.
-  !!
-  !! - num: the input atomic number.
-  !!
-  !************************************************************************
-  !
+  ! ************************************************************************
   Function NumberToLabel(num)
     implicit none
-    integer :: num
-    character (len = 2) :: NumberToLabel
+
+    integer, intent(in) :: num                !! Input atomic number.
+    character (len = 2) :: NumberToLabel      !! Atom label of input atomic number.
 
     select case (num)
 
@@ -642,46 +635,41 @@ contains
   end Function NumberToLabel
 
 
-!
-!==================================================================================
-!
-! Initialize random-number seed from user input.
-!
-! irun - returned Random number seed.
-!
-!==================================================================================
-!
-
-integer Function SetRanSeed( irun )
-  implicit none
-  integer :: n, irun, idum
-  integer,allocatable :: seed(:)
-
-  call random_seed(size=n)
-  allocate(seed(n))
-  seed = irun
-  call random_seed(put=seed)
-  deallocate(seed)
-  SetRanSeed = 1
-
-end Function SetRanSeed
-
-
+  ! ***************************************************************
+  ! SetRanSeed(irun)
+  !|
+  ! Initialize random-number seed from user input.
   !
-  !************************************************************************
-  !> MassFromLabels
-  !!
-  !! gets the mass array from labels
-  !!
-  !! - labels : label array
-  !!
-  !************************************************************************
+  ! ***************************************************************
+  integer Function SetRanSeed(irun)
+    implicit none
+
+    integer, intent(in) :: irun
+    integer :: n, idum
+    integer,allocatable :: seed(:)
+
+    call random_seed(size=n)
+    allocate(seed(n))
+    seed = irun
+    call random_seed(put=seed)
+    deallocate(seed)
+    SetRanSeed = 1
+
+  end Function SetRanSeed
+
+
+  ! ************************************************************************
+  ! MassFromLabels(labels)
+  !|
+  ! Gets an array of atomic masses from an input array of atomic labels.
   !
+  ! ************************************************************************
   Function MassFromLabels(labels) result(mmass)
     implicit none
-    integer                             :: na, i
-    character(2)                        :: labels(:)
-    double precision, allocatable       :: mmass(:)
+
+    character(2), intent(in) :: labels(:)     !! Array of atomic labels.
+    integer :: na, i
+    double precision, allocatable :: mmass(:) !! Output array of atomic masses.
     na = size(labels)
     allocate(mmass(na))
     do i = 1, na

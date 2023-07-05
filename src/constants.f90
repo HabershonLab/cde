@@ -1,61 +1,65 @@
 
-!***************************************************************************************
+!**************************************************************************************
+!|
+! Constants definition file, containing important universal values used
+! throughout the code.
 !
-!> Constants definition file, containing importance universal values used
-!! throughout code.
-!!
-!! **You should avoid changing these values unless you are absolutely sure you know
-!! what you're doing.**
+!@warning **You should avoid changing these values unless you are absolutely sure you 
+! know what you're doing.**
 !
-!***************************************************************************************
+! Values defined here include:
 !
+! - Program-wide maxima for array sizes.
+! - Conversion factors for common units.
+! - Atomic masses, covalent radii and maximum valences.
+! - Bonding ranges, used when determining which atoms in a graph are bonded.
+!
+! **************************************************************************************
 
 Module constants
 
   implicit none
 
-  !
   ! Useful constants.
   !
-  integer, parameter :: NAMAX = 1000           !< Maximum number of atoms.
-  integer, parameter :: NFMAX = 3 * NAMAX     !< Maximum number of DOFs.
-  integer, parameter :: NBMAX = 20            !< Maximum number of images.
-  integer, parameter :: NMOLMAX = 50         !< Maximum number of molecules.
-  integer, parameter :: NDIRMAX = 50          !< Maximum number of directories to create.
-  integer, parameter :: NTYPEMAX = 100        !< Maximum number of atom types.
-  integer, parameter :: NTRYMAX = 1000        !< Maximum number of outer graph-move attempts.
-  integer, parameter :: NTRYMAX2 = 5000       !< Maximum number of inner graph-move attempts.
-  integer, parameter :: NMOVEMAX = 20        !< Maximum number of graph-moves
-  integer, parameter :: NFORBIDMAX = 50        !< Maximum number of forbidden graphs.
-  integer, parameter :: NAMOVEMAX = 6        !< Maximum number of atoms which can be involved in graph moves.
-  integer, parameter :: MAXMOL = 4000 !< Maximum number of molecules stored in MolData datatype
-  integer, parameter :: NMECHMAX = 250        !< Maximum number of stored mechanisms
-  integer, parameter :: NRXNMAX = 25        !< Maximum number of stored mechanisms
+  integer, parameter :: NAMAX = 1000        !! Maximum number of atoms.
+  integer, parameter :: NFMAX = 3 * NAMAX   !! Maximum number of DOFs.
+  integer, parameter :: NBMAX = 20          !! Maximum number of images.
+  integer, parameter :: NMOLMAX = 50        !! Maximum number of molecules.
+  integer, parameter :: NDIRMAX = 50        !! Maximum number of directories to create.
+  integer, parameter :: NTYPEMAX = 100      !! Maximum number of atom types.
+  integer, parameter :: NTRYMAX = 1000      !! Maximum number of outer graph-move attempts.
+  integer, parameter :: NTRYMAX2 = 5000     !! Maximum number of inner graph-move attempts.
+  integer, parameter :: NMOVEMAX = 20       !! Maximum number of graph-moves
+  integer, parameter :: NFORBIDMAX = 50     !! Maximum number of forbidden graphs.
+  integer, parameter :: NAMOVEMAX = 6       !! Maximum number of atoms which can be involved in graph moves.
+  integer, parameter :: MAXMOL = 4000       !! Maximum number of molecules stored in MolData datatype
+  integer, parameter :: NMECHMAX = 250      !! Maximum number of stored mechanisms
+  integer, parameter :: NRXNMAX = 25        !! Maximum number of stored mechanisms
   integer, parameter :: nvalmax = 12
   integer, parameter :: NELMAX = 10
   integer, parameter :: NBONDMAX = 100
   integer, parameter :: NANGLEMAX = 200
   integer, parameter :: NTORSMAX = 300
 
-  !
   ! Useful numerical constants.
   !
-  real(8), parameter :: bohr_to_ang   = 0.5291772108d0 !< Bohr to Angstrom conversion
-  real(8), parameter :: ang_to_bohr   = 1.889726128d0  !< Angstrom to Bohr conversion
-  real(8), parameter :: kcalmol_to_au = 0.001593601d0  !< Convert kcal/mol to au.
-  real(8), parameter :: au_to_kjmol   = 2625.49963d0   !< convert au to kJ/mol
-  real(8), parameter :: au_to_ev      = 27.211396d0
-  real(8), parameter :: ev_to_au      = 0.036749322d0
-  real(8), parameter :: ev_ang_to_au_bohr = 0.019446864d0
-  real(8), parameter :: pivalue       = 3.141592654d0  !< PI!
-  real(8), parameter :: Kboltz        = 3.166829d-6    !< Boltzmann constant in atomic units.
-  real(8), parameter :: hbar          = 1.d0           !< hbar = 1 in atomic units
-  real(8), parameter :: fs_to_au      = 41.341373d0    !< Convert femtosecond to atomic units
-  real(8), parameter :: Eh_to_Kelvin  = 3.157733d+5    !< Convert Hartrees to Kelvin
-  real(8), parameter :: Eh_to_wavenumber = 219474.63   !< Convert Hartrees to wavenumbers.
-  real(8), parameter :: BIG           = 10000          !< A 'BIG' number which is occasionally useful.
-  real(8), parameter :: SMALL         = 1d-5           !< A 'SMALL' number which is occasionally useful.
-  real(8), parameter :: me_to_amu = 5.485799090d-4     !< Convert electron mass units to atomic mass units.
+  real(8), parameter :: bohr_to_ang   = 0.5291772108d0    !! Bohr to Angstrom conversion
+  real(8), parameter :: ang_to_bohr   = 1.889726128d0     !! Angstrom to Bohr conversion
+  real(8), parameter :: kcalmol_to_au = 0.001593601d0     !! Convert kcal/mol to au.
+  real(8), parameter :: au_to_kjmol   = 2625.49963d0      !! Convert au to kJ/mol
+  real(8), parameter :: au_to_ev      = 27.211396d0       !! Convert au to eV
+  real(8), parameter :: ev_to_au      = 0.036749322d0     !! Convert eV to au
+  real(8), parameter :: ev_ang_to_au_bohr = 0.019446864d0 !! Convert eV/Angstrom to au/Bohr
+  real(8), parameter :: pivalue       = 3.141592654d0     !! PI!
+  real(8), parameter :: Kboltz        = 3.166829d-6       !! Boltzmann constant in atomic units.
+  real(8), parameter :: hbar          = 1.d0              !! hbar = 1 in atomic units
+  real(8), parameter :: fs_to_au      = 41.341373d0       !! Convert femtosecond to atomic units
+  real(8), parameter :: Eh_to_Kelvin  = 3.157733d+5       !! Convert Hartrees to Kelvin
+  real(8), parameter :: Eh_to_wavenumber = 219474.63      !! Convert Hartrees to wavenumbers.
+  real(8), parameter :: BIG           = 10000             !! A 'BIG' number which is occasionally useful.
+  real(8), parameter :: SMALL         = 1d-5              !! A 'SMALL' number which is occasionally useful.
+  real(8), parameter :: me_to_amu = 5.485799090d-4        !! Convert electron mass units to atomic mass units.
   real(8), parameter :: epsil = 10.0d0**(-20)
   real(8), parameter :: GCONV = 1d-7
 
@@ -165,7 +169,7 @@ Module constants
                                      0.72d0 * ang_to_bohr, &      ! C      ! 0.72
                                      0.72d0 * ang_to_bohr, &      ! N
                                      0.62d0 * ang_to_bohr, &        ! O
-                                    !! 0.72d0 * ang_to_bohr, &        ! O
+                                    ! 0.72d0 * ang_to_bohr, &        ! O
                                      0.6d0 * ang_to_bohr, &     ! F
                                      0.d0, &             ! Ne
                                     0.d0, &             ! Na
@@ -246,7 +250,8 @@ Module constants
                                     0.d0, &             ! Rn
                                     1.50d0/)              ! G1
 
-
+  !> Maximum allowed valencies for atoms. Indexed by atomic number,
+  !! so `AValency(1)` = maximum valency of hydrogen, i.e. 1.
   integer,parameter :: AValency(87) = (/1, &             ! H
                                        2, &             ! He
                                        1, &             ! Li
@@ -335,19 +340,15 @@ Module constants
                                        0, &             ! Rn
                                        10 /)            ! G1
 
-
-
-!  real(8), parameter :: bondingsf = 1.10d0       !< Scale factor applied to covalent radii to
-  ! lammps optimises wrong C-H distance if made 1.1
-  real(8), parameter :: bondingsf = 1.10d0       !< Scale factor applied to covalent radii to
+  real(8), parameter :: bondingsf = 1.10d0      !! Scale factor applied to covalent radii to
                                                 !! define bonding. Atoms are bonded if
-                                                !! r(i,j) <= (covrad(i) + covrad(j)) * bondingsf
+                                                !! `r(i,j) <= (covrad(i) + covrad(j)) * bondingsf`
 
-  real(8), parameter :: bondingrange1 = 0.25d0 * ang_to_bohr   !< Shift range over which atoms are restrained
-                                                             !! in GDS simulations.
+  real(8), parameter :: bondingrange1 = 0.25d0 * ang_to_bohr  !! Shift range over which atoms are restrained
+                                                              !! in GDS simulations.
 
-  real(8), parameter :: bondingrange2 = -0.10d0 * ang_to_bohr   !< Shift range over which atoms are restrained
-                                                             !! in GDS simulations.
+  real(8), parameter :: bondingrange2 = -0.10d0 * ang_to_bohr !! Shift range over which atoms are restrained
+                                                              !! in GDS simulations.
   !
   real(8), parameter :: RADIUS_MAX = 50.d0 * ang_to_bohr  ! 100?
   real(8), parameter :: RADIUS_MIN = 12.d0 * ang_to_bohr
@@ -363,8 +364,7 @@ Module constants
   real(8) :: tbstrength(10,10) = 0.0d0
 
 
-  real(8), parameter :: GRPMINTHRESH = 1d-3      !< Force convergence target (in au) for minimization under GRP.
-  real(8), parameter :: GRPMAXTHRESH = 1d-2      !< Force convergence target (in au) for minimization under GRP.
-
+  real(8), parameter :: GRPMINTHRESH = 1d-3    !! Force convergence target (in au) for minimization under GRP.
+  real(8), parameter :: GRPMAXTHRESH = 1d-2    !! Force convergence target (in au) for minimization under GRP.
 
 end Module constants
