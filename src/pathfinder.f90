@@ -2589,27 +2589,44 @@ contains
 
         grstore(:, :) = wcx(1)%graph(:, :)
         rstore(:, :) = wcx(1)%r(:, :)
+        call SetCXSconstraints(wcx(1), NDOFconstr, FixedDOF, Natomconstr, FixedAtom)
+        call GetMols(wcx(1))
+
+        ! Pre-optimise under GRP to ensure proximity of reactants.
+        call OptimizeGRPForceConv(wcx(1), success, gdsrestspring, nbstrength, nbrange, &
+            & kradius, ngdsrelax, gdsdtrelax)
+        if (.not. success) then
+          err = .TRUE.
+          errstr = 'Optimisation of reactant under GRP failed'
+          wcx(1)%r(:, :) = rstore(:, :)
+          wcx(1)%graph(:, :) = grstore(:, :)
+          call GetMols(wcx(1))
+          return
+        endif
+
         call AbInitio(wcx(1), 'optg', success)
 
         ! Check graph hasn't been invalidated by optimisation.
         ! Note that this is not subject to user decision, as an incorrect graph
         ! here leads to discontinous networks.
         call GetGraph(wcx(1))
-        isum = 0
-        do i = 1, natoms
-          do j = 1, natoms
-            if (wcx(1)%graph(i, j) /= grstore(i, j)) then
-              isum = isum + 1
-            endif
+        if (.not. ignoreinvalidgraphopt) then
+          isum = 0
+          do i = 1, natoms
+            do j = 1, natoms
+              if (wcx(1)%graph(i, j) /= grstore(i, j)) then
+                isum = isum + 1
+              endif
+            enddo
           enddo
-        enddo
-        if (isum /= 0) then
-          err = .TRUE.
-          errstr = 'Reactant graph invalidated by optimisation'
-          ! Restore original positions and graph to wcx(1).
-          wcx(1)%r(:, :) = rstore(:, :)
-          wcx(1)%graph(:,:) = grstore(:, :)
-          return
+          if (isum /= 0) then
+            err = .TRUE.
+            errstr = 'Reactant graph invalidated by optimisation'
+            ! Restore original positions and graph to wcx(1).
+            wcx(1)%r(:, :) = rstore(:, :)
+            wcx(1)%graph(:,:) = grstore(:, :)
+            return
+          endif
         endif
 
       else
@@ -2643,9 +2660,9 @@ contains
 
     if (.not. success) then
       err = .TRUE.
-      errstr = 'Optimisation under GRP failed'
+      errstr = 'Optimisation of product under GRP failed'
       wcx(2)%r(:, :) = rstore(:, :)
-      wcx(2)%graph(:,:) = grstore(:, :)
+      wcx(2)%graph(:, :) = grstore(:, :)
       call GetMols(wcx(2))
       return
     endif
