@@ -8,7 +8,6 @@ startfile start.xyz
 endfile end.xyz
 pathfile path.xyz
 ranseed  5
-pathinit  linear 
 startfrompath .true.
 idppguess .true.
 
@@ -16,11 +15,11 @@ idppguess .true.
 
 pathoptmethod cineb
 nebmethod quickmin 
-nebiter 50 
-vsthresh 1d-2
-cithresh 1d-3
+nebiter 250
+vsthresh 5d-2
+cithresh 1d-2
 nebspring 0.05
-nebconv 2d-3
+nebconv 5d-3
 nebstep  10.0 
 neboutfreq 1
 stripinactive .FALSE.
@@ -39,8 +38,8 @@ pestype  orca
 pesfile   orca.head
 pesopttype  orca 
 pesoptfile orca.min
-pesexecutable /Users/scott/programs/orca/orca 
-pesoptexecutable /Users/scott/programs/orca/orca 
+pesexecutable orca 
+pesoptexecutable orca 
 
 
  
