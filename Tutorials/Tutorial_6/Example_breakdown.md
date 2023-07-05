@@ -21,8 +21,6 @@ In this directory, you will find several input files:
 	moves.in
     xtb.head
 
-All of these input filenames are arbitrary; we could have called them alice, bob, clive and ralph and the program would still read them in correctly. Note that the extensions have no effect for input files read in by CDE, but they can be used to remind you what the different input files are.
-
 Let's have a look at each input file individually:
 
 ### input
@@ -36,24 +34,12 @@ The *input* file for this GDS run looks like this:
     nchargemol 0
     maxstepcharge 0
     maxtotalcharge 0
-    optaftermove .true.
     pesfull .false.
-    nimage 6
     startfile start.xyz
-    endfile end.xyz
-    idppguess .true.
 
-    pathoptmethod cineb
-    nebmethod quickmin 
-    nebiter 500
-    cithresh 5d-4
-    nebspring 0.05
-    nebstep  10.0 
-    neboutfreq 5
     stripinactive .true.
-    optendsbefore .true.
-    optendsduring .false.
-    nebrestrend .true.
+    optaftermove .true.
+    ignoreinvalidgraphopts .false.
 
     dofconstraints 0
     atomconstraints 0
@@ -103,11 +89,21 @@ The *input* file for this GDS run looks like this:
     nmcrxn 1
     graphfunctype 4
 
-The input file in this case only contains (mostly) those options which are relevant to the breakdown simulation; other input directives have been removed and will be ignored internally in CDE.
+The input file in this case only contains options which are relevant to the breakdown simulation; other input directives have been removed and will be ignored internally in CDE.
 
 The parameter input blocks in the input file have already been covered in other tutorials for GDS and for CINEB (see, for example, @ref Annotated). In the case of a breakdown calculation, the following are the new parameters which have an impact on the algorithm:
 
 - **calctype**: Note that the *calctype* parameter must be set to *breakdown*.
+
+- **ignoreinvalidgraphopt**: When *.TRUE.*, this allows for optimisations that break a graph to still be accepted as valid. This will likely result in a discontinuous reaction path, as reactants from each reaction step have the chance to change their bonding, becoming entirely different molecules. This should be left as *.FALSE.* unless you are generating reactions with no need for a consistent single-ended reaction path.
+
+Some parameters which are present in other *calctype*s also gain slightly different meanings, and should be taken into account:
+
+- **stripinactive**: This still removes spectator molecules, but deserves a special mention since it is usually useful to keep active in these simulations. Breakdown simulations usually lead to many separated molecules in the overall system, and usually only a handful of these will be reacting each step. Removing spectator molecules can therefore provide a massive boost in performance, either by reducing the number of calculator calls when *pesfull .FALSE.* or reducing the complexity of the calculator calls for the reactant system and product system when *pesfull .TRUE.*. This will however negate intermolecular interactions between the active and spectator molecules in each step, so if these are important to you then this should be *.FALSE.*.
+
+    In cases where this behaviour is desired, it can be useful to also adjust the *kradius* parameter. Reducing this parameter lets separate molecules end up closer together when optimised under the GRP, which can be desirable if e.g. you are running TS-finding calculations on reactant-product pairs from these calculations, as computational effort is not wasted resolving the translation of one molecule to another. This can also lead to more graphs being invalidated when *optaftermove .TRUE.* though, so *ignoreinvalidgraphopt .TRUE.* may be necessary.
+
+- **optaftermove**: When *.TRUE.*, this parameter requests a geometry optimisation of the products after a graph move has been made. If *stripinactive .TRUE.* then this will also trigger an optimisation of the reactants of each reaction step, as they may behave differently in isolation when compared to being in a full system of spectator molecules. These optimisations have the potential to break the graph for a reaction step, as they operate outside of the GRP and so aren't beholden to maintaining the graph. In some cases, this can lead to many attempts at graph moves failing due to expensive PES calls invalidating graphs.
 
 - **nrxn**: This is the total number of reactions used in the reaction mechanisms being searched and generated. Unlike in netgrow, null reactions are not possible in this routine.
 

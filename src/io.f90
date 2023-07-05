@@ -1162,6 +1162,7 @@ contains
     gdsdtrelax = 0.1d0
     optaftermove = .FALSE.
     skiprepeats = .FALSE.
+    ignoreinvalidgraphopt = .FALSE.
     nvalcon = 0
     nrxval = 0
     ngen = 0
