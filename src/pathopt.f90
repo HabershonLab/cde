@@ -588,7 +588,12 @@ contains
       !   write(logfile,'("* |Forces| < NEBconv :: CONVERGED")')
       !   exit
       ! endif
-
+      if (iter .eq. NEBiter) then
+        write(logfile, '("* |Forces| > NEBconv :: NOT CONVERGED")')
+        write(logfile, '("* Consider setting a higher number of NEB iterations.")')
+        write(logfile, '("* Final path will still be output, but will NOT correspond to the MEP.")')
+        print *, 'CINEB reached max iterations - NEB NOT CONVERGED'
+      endif
     enddo
 
 
