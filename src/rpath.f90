@@ -378,6 +378,7 @@ contains
       endif
       if (iter == IDPPIter) then
         write(logfile, '(/, "IDPP INTERPOLATION FAILED")')
+        stop
       endif
     enddo
 

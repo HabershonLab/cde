@@ -235,7 +235,7 @@ contains
     ! (Smidstrup et al J Chem phys 2014, 140):
     !
     if (idpppath) then
-      call FindIDPPPath(rp, NEBIter*250, NEBConv*0.1d0, NEBstep, NEBspring)
+      call FindIDPPPath(rp, NEBIter*250, NEBConv*0.1d0, NEBstep*0.1d0, NEBspring)
     endif
 
     ! Sort out orientation of images.
