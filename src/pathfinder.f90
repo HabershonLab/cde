@@ -2605,6 +2605,13 @@ contains
         endif
 
         call AbInitio(wcx(1), 'optg', success)
+        if (.not. success) then
+          err = .true.
+          errstr = 'Reactant optimisation failed'
+          wcx(1)%r(:, :) = rstore(:, :)
+          wcx(1)%graph(:,:) = grstore(:, :)
+          return
+        endif
 
         ! Check graph hasn't been invalidated by optimisation.
         ! Note that this is not subject to user decision, as an incorrect graph
@@ -2631,6 +2638,11 @@ contains
 
       else
         call AbInitio(wcx(1), 'ener', success)
+        if (.not. success) then
+          err = .true.
+          errstr = 'Energy calculation for reactant failed'
+          return
+        endif
       endif
     endif
 
@@ -2673,6 +2685,14 @@ contains
       grstore(:,:) = wcx(2)%graph(:,:)
 
       call AbInitio(wcx(2), 'optg', success)
+      if (.not. success) then
+        err = .true.
+        errstr = 'Product optimisation failed'
+        wcx(2)%r(:, :) = wcx(1)%r(:, :)
+        wcx(2)%graph(:, :) = grstore(:, :)
+        return
+      endif
+
       call SetCXSconstraints(wcx(2), NDOFconstr, FixedDOF, Natomconstr, FixedAtom)
 
       call GetGraph(wcx(2))
