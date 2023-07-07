@@ -717,7 +717,7 @@ contains
     type(rxp) :: rp
     integer :: i
     logical :: minimize, success
-	character(len=50) :: errstr
+	  character(len=50) :: errstr
 
     ! Loop over images, calculating energy for each.
     !
@@ -728,12 +728,12 @@ contains
       endif
       call AbInitio(rp%cx(i), 'ener', success)
 
-	  if (.not. success) then
-		errstr = 'Energy calculation failed for image '
-		write(errstr, '(I5)') i
-		print *, errstr
-		return
-	  endif
+      if (.not. success) then
+        errstr = 'Energy calculation failed for image '
+        write(errstr, '(I5)') i
+        print *, errstr
+        return
+      endif
     enddo
 
     return
@@ -759,7 +759,7 @@ contains
     logical, intent(out) :: success
     logical, intent(in) :: calc_all
     integer :: i
-	character(len=50) :: errstr
+	  character(len=50) :: errstr
 
     ! Loop over images, calculating energy for each.
     !
@@ -772,12 +772,12 @@ contains
       endif
       call AbInitio(rp%cx(i), 'grad', success)
 
-	  if (.not. success) then
-		errstr = 'Gradient calculation failed for image '
-		write(errstr, '(I5)') i
-		print *, errstr
-		return
-	  endif
+      if (.not. success) then
+        errstr = 'Gradient calculation failed for image '
+        write(errstr, '(I5)') i
+        print *, errstr
+        return
+      endif
     enddo
 
     return
