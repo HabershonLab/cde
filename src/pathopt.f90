@@ -291,6 +291,9 @@ contains
     ! Calculate the energy along the initial path.
     !
     call GetPathGradients(rp, success, .true.)
+	if (.not. success) then
+	  stop '* ERROR: Gradient calculation failed.'
+	endif
 
     ! Add restraint forces to end-points if required.
     !
@@ -474,6 +477,9 @@ contains
       ! Recalculate energy and projected forces.
       !
       call GetPathGradients(rp, success, .false.)
+	  if (.not. success) then
+		stop '* ERROR: Gradient re-calculation (following optimisation) failed.'
+	  endif
 
       ! Remove overall translation and rotation.
       ! TBD
