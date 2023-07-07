@@ -31,7 +31,7 @@ contains
     type(rxp), intent(out) :: rp
 
     integer :: nmol(2)
-    logical :: ldum
+    logical :: success
 
     ! Initialize the reaction path object.
     Call NewPath(rp, startfrompath, startfile, endfile, pathfile, nimage, &
@@ -69,8 +69,16 @@ contains
 
       ! Do we optimize the end-points before NEB?
       if (optendsbefore) then
-        call AbInitio(rp%cx(1), 'optg', ldum)
-        call AbInitio(rp%cx(rp%nimage), 'optg', ldum)
+        call AbInitio(rp%cx(1), 'optg', success)
+		if (.not. success) then
+		  stop "* ERROR: Optimization of the initial geometry failed"
+		endif
+
+        call AbInitio(rp%cx(rp%nimage), 'optg', success)
+		if (.not. success) then
+		  stop "* ERROR: Optimization of the final geometry failed"
+		endif
+
         call GetGraph(rp%cx(1))
         call GetMols(rp%cx(1))
         call GetGraph(rp%cx(rp%nimage))
@@ -199,8 +207,16 @@ contains
     ! Do we optimize the end-points before NEB?
     !
     if (optendsbefore) then
-      call AbInitio(rp%cx(1), 'optg', ldum)
-      call AbInitio(rp%cx(rp%nimage), 'optg', ldum)
+      call AbInitio(rp%cx(1), 'optg', success)
+	  if (.not. success) then
+		stop "* ERROR: Optimization of the initial geometry failed"
+	  endif
+
+      call AbInitio(rp%cx(rp%nimage), 'optg', success)
+	  if (.not. success) then
+		stop "* ERROR: Optimization of the final geometry failed"
+	  endif
+
       call GetGraph(rp%cx(1))
       call GetMols(rp%cx(1))
       call GetGraph(rp%cx(rp%nimage))
