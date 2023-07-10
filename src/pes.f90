@@ -793,7 +793,8 @@ contains
       inquire(file="temp.engrad", exist=there)
       if (.not. there) then
         print *, 'Missing file temp.engrad, ORCA calculation must have failed.'
-        stop 
+        success = .FALSE.
+        return 
       endif
       string1 = "grep 'The current gradient' temp.engrad -A"
       write(cnum,'(I5)')3*cx%na+2

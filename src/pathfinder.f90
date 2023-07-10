@@ -2640,8 +2640,8 @@ contains
       else
         call AbInitio(wcx(1), 'ener', success)
         if (.not. success) then
-          err = .TRUE.
-          errstr = 'Energy calculation of reactant failed'
+          err = .true.
+          errstr = 'Energy calculation for reactant failed'
           return
         endif
       endif
