@@ -177,7 +177,7 @@ contains
   !
   Subroutine AbInitio(cx, abtypein, success)
     implicit none
-    logical :: minimize, minimize_mol, success
+    logical :: minimize, minimize_mol, success, success_mol
     type(cxs) :: cx
     type(cxs), dimension(:), allocatable :: cxtemp
     character (len=6) :: ptype
@@ -291,6 +291,7 @@ contains
 
       ! For each CXS object, calculate the energy.
       !
+      success = .true.
       do i = 1, nmol
 
         print *, 'Optimising molecule ', i, "/", nmol
@@ -302,33 +303,34 @@ contains
           abtype_mol = abtype
           minimize_mol = minimize
         endif
+        success_mol = .true.
 
         ! Run the calculation.
         select case (ptype)
 
           case('orca')
-            call ORCAcalc(cxtemp(i), abtype_mol, success)
+            call ORCAcalc(cxtemp(i), abtype_mol, success_mol)
 
           case('dftb')
-            call DFTBcalc(cxtemp(i), minimize_mol, success)
+            call DFTBcalc(cxtemp(i), minimize_mol, success_mol)
 
           case('lammps')
-            call LAMMPScalc(cxtemp(i), abtype_mol, success)
+            call LAMMPScalc(cxtemp(i), abtype_mol, success_mol)
 
           case('psi4')
-            call PSI4calc(cxtemp(i), minimize_mol, success)
+            call PSI4calc(cxtemp(i), minimize_mol, success_mol)
 
           case('molpro')
-            call MOLPROcalc(cxtemp(i), abtype_mol, success)
+            call MOLPROcalc(cxtemp(i), abtype_mol, success_mol)
 
           case('uff')
-            call UFFcalc(cxtemp(i), minimize_mol, success)
+            call UFFcalc(cxtemp(i), minimize_mol, success_mol)
 
           case('xtb')
-            call xTBcalc(cxtemp(i), minimize_mol, success)
+            call xTBcalc(cxtemp(i), minimize_mol, success_mol)
 
           case('aims')
-            call AIMScalc(cxtemp(i), minimize_mol, success)
+            call AIMScalc(cxtemp(i), minimize_mol, success_mol)
 
           case('null')
             cxtemp(i)%vcalc = 0.d0
@@ -339,8 +341,23 @@ contains
 
         end select
 
-        print *, 'Finished optimisation.'
+        if (.not. success_mol) then
+          print *, 'Optimisation of molecule ', i, 'failed.'
+          print *, 'Cancelling remaining optimisations.'
+          success = .false.
+          exit
+        else
+          print *, 'Finished optimisation.'
+        endif
       enddo
+
+      if (.not. success) then
+        do i = 1, nmol
+          call DeleteCXS(cxtemp(i))
+        enddo
+        deallocate(cxtemp)
+        return
+      endif
 
       ! Now recombine the results for each molecule.
       !
@@ -1041,9 +1058,14 @@ contains
     call execute_command_line(str, wait=.true., exitstat=estat, cmdstat=cstat, cmdmsg=cmsg)
 
     ! Check calculation ran correctly.
-    if (cstat .gt. 0) then
+    if (estat .gt. 0) then
       print *, 'xTB failed with error message: ', cmsg
-      stop
+      success = .false.
+      call execute_command_line(&
+        'rm -f charges xtbin.engrad xtbin.xyz xtbopt.xyz xtbopt.log xtb.out &
+        &energy gradient wbo xtbrestart xtbtopo.mol .xtboptok', &
+        wait=.true., exitstat=estat, cmdstat=cstat, cmdmsg=cmsg)
+      return
     endif
 
     ! Read forces.
