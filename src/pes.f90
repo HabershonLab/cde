@@ -1040,9 +1040,14 @@ contains
     call execute_command_line(str, wait=.true., exitstat=estat, cmdstat=cstat, cmdmsg=cmsg)
 
     ! Check calculation ran correctly.
-    if (cstat .gt. 0) then
+    if (estat .gt. 0) then
       print *, 'xTB failed with error message: ', cmsg
-      stop
+      success = .false.
+      call execute_command_line(&
+        'rm -f charges xtbin.engrad xtbin.xyz xtbopt.xyz xtbopt.log xtb.out &
+        &energy gradient wbo xtbrestart xtbtopo.mol .xtboptok', &
+        wait=.true., exitstat=estat, cmdstat=cstat, cmdmsg=cmsg)
+      return
     endif
 
     ! Read forces.
