@@ -2585,65 +2585,11 @@ contains
     ! Useful if StripInactiveMols has been called, as the starting molecules
     ! will not have energies tied to them anymore.
     if (calcinitial_aux) then
-      if (optaftermove .and. optoverride_aux) then
-
-        grstore(:, :) = wcx(1)%graph(:, :)
-        rstore(:, :) = wcx(1)%r(:, :)
-        call SetCXSconstraints(wcx(1), NDOFconstr, FixedDOF, Natomconstr, FixedAtom)
-        call GetMols(wcx(1))
-
-        ! Pre-optimise under GRP to ensure proximity of reactants.
-        call OptimizeGRPForceConv(wcx(1), success, gdsrestspring, nbstrength, nbrange, &
-            & kradius, ngdsrelax, gdsdtrelax)
-        if (.not. success) then
-          err = .TRUE.
-          errstr = 'Optimisation of reactant under GRP failed'
-          wcx(1)%r(:, :) = rstore(:, :)
-          wcx(1)%graph(:, :) = grstore(:, :)
-          call GetMols(wcx(1))
-          return
-        endif
-
-        call AbInitio(wcx(1), 'optg', success)
-        if (.not. success) then
-          err = .TRUE.
-          errstr = 'Optimisation of reactant failed'
-          wcx(1)%r(:, :) = rstore(:, :)
-          wcx(1)%graph(:, :) = grstore(:, :)
-          call GetMols(wcx(1))
-          return
-        endif
-
-        ! Check graph hasn't been invalidated by optimisation.
-        ! Note that this is not subject to user decision, as an incorrect graph
-        ! here leads to discontinous networks.
-        call GetGraph(wcx(1))
-        if (.not. ignoreinvalidgraphopt) then
-          isum = 0
-          do i = 1, natoms
-            do j = 1, natoms
-              if (wcx(1)%graph(i, j) /= grstore(i, j)) then
-                isum = isum + 1
-              endif
-            enddo
-          enddo
-          if (isum /= 0) then
-            err = .TRUE.
-            errstr = 'Reactant graph invalidated by optimisation'
-            ! Restore original positions and graph to wcx(1).
-            wcx(1)%r(:, :) = rstore(:, :)
-            wcx(1)%graph(:,:) = grstore(:, :)
-            return
-          endif
-        endif
-
-      else
-        call AbInitio(wcx(1), 'ener', success)
-        if (.not. success) then
-          err = .true.
-          errstr = 'Energy calculation for reactant failed'
-          return
-        endif
+      call AbInitio(wcx(1), 'ener', success)
+      if (.not. success) then
+        err = .true.
+        errstr = 'Energy calculation for reactant failed'
+        return
       endif
     endif
 
