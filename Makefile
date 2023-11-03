@@ -3,6 +3,7 @@
 .SUFFIXES:
 EXE = ./bin/cde.x
 FC ?= 'gfortran'
+COMPILE_STATIC ?= TRUE
 
 ifeq "$(FC)" "gfortran"
 MODCMD = -J
@@ -11,7 +12,11 @@ LIBS = -lopenblas
 else ifeq "$(FC)" "ifort"
 MODCMD = -module
 FFLAGS = -O3 -i8 -I"${MKLROOT}/include"
-LIBS =  -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_intel_thread.a ${MKLROOT}/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl
+LIBS =  -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_intel_thread.a ${MKLROOT}/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm
+endif
+
+ifeq "$(COMPILE_STATIC)" "TRUE"
+FFLAGS := $(FFLAGS) -static
 endif
 
 MF = Makefile
