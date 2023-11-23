@@ -4,7 +4,7 @@
 EXE = ./bin/cde.x
 EXE_DIR = $(dir ${EXE})
 FC ?= 'gfortran'
-COMPILE_STATIC ?= TRUE
+COMPILE_STATIC ?= FALSE
 
 ifeq "$(FC)" "gfortran"
 MODCMD = -J
