@@ -1227,6 +1227,81 @@ contains
   end Subroutine GraphConstraints
 
 
+    !
+  !*************************************************************************
+  !> COMGraphConstraints
+  !!
+  !! Calculates the potential energy and forces arising due to only 
+  !! molecule-molecule COM repulsion, ignoring interatomic constraints.
+  !!
+  !! - cx: A chemical structure object.
+  !! - kradius: Harmonic restraint term strength for different molecules.
+  !!
+  !*************************************************************************
+  !
+  Subroutine COMGraphConstraints(cx, kradius)
+    implicit none
+    type(cxs) :: cx
+    integer :: i, j, na, f, ii
+    integer :: jj, i1, i2, j1, id1, id2
+    real(8) :: kspring, rr, rsq, t1, dx, dy, dz, kradius
+    real(8) :: nbstrength, nbrange, dr, eterm, onr, rx
+    real(8) :: M1, M2
+    real(8), dimension(3) :: xcom1, xcom2
+
+    ! Set local variables.
+    !
+    na = cx%na
+
+    ! Repulsion between SEPARATE molecules...
+    !
+    cx%vcon = 0.d0
+    if (cx%nmol > 1) then
+
+      ! COM version.
+      !
+      do i = 1, cx%nmol-1
+        xcom1 = MolecularCOM(cx, i)
+        M1 = MolecularMass(cx, i)
+        do j = i+1, cx%nmol
+          xcom2 = MolecularCOM(cx, j)
+          M2 = MolecularMass(cx, j)
+
+          dx = xcom1(1) - xcom2(1)
+          dy = xcom1(2) - xcom2(2)
+          dz = xcom1(3) - xcom2(3)
+          rsq = dx*dx + dy*dy + dz*dz
+          rr = sqrt(rsq)
+
+          if (rr < RADIUS_MIN) then
+            onr = 1.d0 / rr
+            dr = rr - RADIUS_MIN
+            cx%vcon = cx%vcon + kradius * dr**2
+            t1 = 2.0 * kradius * dr
+
+            do i1 = 1, cx%namol(i)
+              ii = cx%molid(i, i1)
+              cx%dvdr(1, ii) = cx%dvdr(1, ii) + t1 * dx * onr /M1
+              cx%dvdr(2, ii) = cx%dvdr(2, ii) + t1 * dy * onr /M1
+              cx%dvdr(3, ii) = cx%dvdr(3, ii) + t1 * dz * onr /M1
+            enddo
+
+            do i1 = 1, cx%namol(j)
+              jj = cx%molid(j, i1)
+              cx%dvdr(1, jj) = cx%dvdr(1, jj) - t1 * dx * onr /M2
+              cx%dvdr(2, jj) = cx%dvdr(2, jj) - t1 * dy * onr /M2
+              cx%dvdr(3, jj) = cx%dvdr(3, jj) - t1 * dz * onr /M2
+            enddo
+          endif
+        enddo
+      enddo
+
+    endif
+
+    return
+  end Subroutine COMGraphConstraints
+
+
   !
   !*************************************************************************
   !> GraphConstraints_DoubleEnded
@@ -2961,6 +3036,103 @@ contains
 
     return
   end Subroutine OptimizeGRPForceConv
+
+
+  !
+  !*************************************************************************
+  !> OptimizeGRPCOM
+  !!
+  !! Minimises the molecules according to the Graph restraining potential.
+  !!
+  !! Unlike the original OptimizeGRP routine, uses the force convergence 
+  !! criteria of OptimizeGRPDoubleEnded to determine if optimisations
+  !! are successful. Also removes all GRP contributions apart from the 
+  !! molecule-molecule repulsion term, so atoms only move under their
+  !! molecules' COMs.
+  !!
+  !! - cx: The input chemical structure
+  !! - success: weather we satisfied the contraints after the monimization or not
+  !! - rest: parameters for the GRP and minimization
+  !!
+  !*************************************************************************
+  !
+  Subroutine OptimizeGRPCOM(cx, success, kradius, ngdsrelax, gdsdtrelax)
+    implicit none
+    type(cxs) :: cx, cxtmp1, cxtmp2
+    integer :: i, j, k, l, n, m, it, cc1, cc2, idof, isum, ngdsrelax, iact
+    real(8) :: kradius, gdsdtrelax,sum,rmax
+    logical :: success, debug
+
+    debug = .false.
+    if (debug) open(21, file='ori.xyz', status='unknown', position='append')
+    if (debug) then
+      write(21, *) cx%na
+      write(21, *) 'FORCE? = ', norm2(reshape(cx%dvdr(1:3,1:cx%na), (/cx%na*3/)))
+      do i = 1, cx%na
+        write(21, '("'//cx%Atomlabel(i)//'", 3(X, F15.7))') cx%r(1:3, i)*bohr_to_ang
+      enddo
+      close(21)
+    endif
+    if (debug) open(22,file='banana.xyz',status='unknown',position='append')
+
+    ! SD optimisation
+    success = .false.
+    cx%dvdr(:, :) = 0.0D0
+    outer: do it = 0, ngdsrelax
+      idof = 0
+      sum = 0.d0
+      rmax = -1d6
+      iact = 0
+
+      if (it > 0) then
+        do i = 1, cx%na
+          if (.not. cx%fixedatom(i)) Then
+            do k = 1, 3
+              idof = idof + 1
+              if (.not. cx%fixeddof(idof)) then
+                iact = iact + 1
+                cx%r(k, i) = cx%r(k, i) - gdsdtrelax * cx%dvdr(k, i)
+                sum = sum + cx%dvdr(k, i)**2
+                if (abs( cx%dvdr(k, i)) > rmax) rmax = abs(cx%dvdr(k, i))
+              endif
+            enddo
+          else
+            idof = idof + 3
+          endif
+        enddo
+
+        ! Check convergence based on RMS forces and maximum force.
+        sum = dsqrt(sum / dble(idof))
+
+        if (debug) then 
+          print *, 'SUM = ', sum, ' MAX = ', rmax 
+        endif
+
+        if (sum < GRPMINTHRESH .and. rmax < GRPMAXTHRESH .and. it .ge. 100) then
+          success = .true.
+          exit outer
+        endif
+      endif
+
+      if (debug) then
+        write(22, *) cx%na
+        ! write(22, *) 'FORCE? = ', norm2(reshape(cx%dvdr(1:3, 1:cx%na), (/cx%na*3/)))
+        write(22, '("Properties=species:S:1:pos:R:3:forces:R:3")')
+        do i = 1, cx%na
+          write(22, '("'//cx%Atomlabel(i)//'", 6(X, F15.7))') cx%r(1:3, i)*bohr_to_ang, -cx%dvdr(1:3, i)*bohr_to_ang
+        enddo
+        flush(22)
+      endif
+
+      ! Update derivatives.
+      cx%dvdr(:, :) = 0.0D0
+      call COMGraphConstraints(cx, kradius)
+
+    enddo outer
+    if (debug) close(22)
+
+    return
+  end Subroutine OptimizeGRPCOM
 
 
   !

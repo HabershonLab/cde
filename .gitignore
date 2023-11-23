@@ -3,3 +3,5 @@
 bin
 test/*
 doc/*
+src/*.mod
+src/*.o
