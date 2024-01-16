@@ -643,29 +643,46 @@ contains
   end Function NumberToLabel
 
 
-!
-!==================================================================================
-!
-! Initialize random-number seed from user input.
-!
-! irun - returned Random number seed.
-!
-!==================================================================================
-!
+  !
+  !==================================================================================
+  !
+  ! Initialize random-number seed from user input.
+  !
+  ! irun - Random number seed.
+  !
+  !==================================================================================
+  !
 
-integer Function SetRanSeed( irun )
-  implicit none
-  integer :: n, irun, idum
-  integer,allocatable :: seed(:)
+  integer Function SetRanSeed( irun )
+    implicit none
+    integer :: i, n, s, irun, idum
+    integer,allocatable :: seed(:)
 
-  call random_seed(size=n)
-  allocate(seed(n))
-  seed = irun
-  call random_seed(put=seed)
-  deallocate(seed)
-  SetRanSeed = 1
+    call random_seed(size=n)
+    allocate(seed(n))
+    s = irun
+    do i = 1, n
+      seed(i) = simple_rng(s)
+    enddo
+    call random_seed(put=seed)
+    deallocate(seed)
+    SetRanSeed = 1
 
-end Function SetRanSeed
+  end Function SetRanSeed
+
+
+  integer function simple_rng(s)
+    use iso_fortran_env, only: int64
+    implicit none
+    integer(int64) :: s
+    if (s == 0) then
+      s = 104729
+    else
+      s = mod(s, 4294967296_int64)
+    end if
+    s = mod(s * 279470273_int64, 4294967291_int64)
+    simple_rng = int(mod(s, int(huge(0), int64)), kind(0))
+  end function simple_rng
 
 
   !
