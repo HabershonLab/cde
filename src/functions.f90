@@ -654,9 +654,11 @@ contains
   !
 
   integer Function SetRanSeed( irun )
+    use iso_fortran_env, only: int64
     implicit none
-    integer :: i, n, s, irun, idum
-    integer,allocatable :: seed(:)
+    integer :: i, n, irun, idum
+    integer(int64) :: s
+    integer(int64), allocatable :: seed(:)
 
     call random_seed(size=n)
     allocate(seed(n))
