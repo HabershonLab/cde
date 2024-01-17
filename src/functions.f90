@@ -658,7 +658,7 @@ contains
     implicit none
     integer :: i, n, irun, idum
     integer(int64) :: s
-    integer(int64), allocatable :: seed(:)
+    integer, allocatable :: seed(:)
 
     call random_seed(size=n)
     allocate(seed(n))
