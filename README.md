@@ -20,6 +20,18 @@ CDE interfaces with several external programs to perform energy evaluations and 
 - xTB
 - FHI-aims
 
+**Installation**
+
+(1) Clone this repository.
+
+(2) In the main `cde` directory, edit the `Makefile` to include your specific Fortan compiler and LAPACK library.
+
+(3) Type `make clean`, then `make` - the code should compile.
+
+(4) To create a local version of the documentation, type `make docs`. You will need `doxygen` and `mkdocs` installed to correctly compile and display the resulting user guide. 
+
+**References**
+
 The graph-driven sampling of reaction-paths implemented in CDE is initially described in the following articles:
  - Sampling reactive pathways with random walks in chemical space: Applications to molecular dissociation and catalysis, S Habershon, Journal of chemical physics 143 (9), 094106 (2015)
  - Automated prediction of catalytic mechanism and rate law using graph-based reaction path sampling, S. Habershon, Journal of chemical theory and computation 12 (4), 1786-1798 (2016)
