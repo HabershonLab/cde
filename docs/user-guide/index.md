@@ -1,23 +1,23 @@
 # User Guide
 
-This section documents the CDE input system, potential-energy-surface interfaces, reaction-path methods and associated file formats.
+This section documents the CDE input files, potential energy surface (PES) interfaces, reaction-path methods and associated file formats. 
 
 ## Configuration
 
-- [Setup](setup.md)
-- [Annotated Input](annotated-input.md)
-- [Hints](hints.md)
+- [Compilation and setup](setup.md)
 
-## Input and output
 
-- [Input Formats](formats.md)
-- [Move Files](move-files.md)
-- [Forbid Files](forbid-files.md)
+## Input and output files formats
+
+- [Annotated input files](annotated-input.md)
+- [Structure formats](formats.md)
+- [Move-file format](move-files.md)
+<!-- - [Forbid Files](forbid-files.md) -->
 
 ## Potential energy surfaces
 
-- [PES](pes.md)
-- [PES Templates](pes-templates.md)
+- [PES calculations](pes.md)
+- [PES templates](pes-templates.md)
 
 ## References
 

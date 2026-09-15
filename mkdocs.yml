@@ -19,25 +19,37 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.highlight
   - pymdownx.superfences
-  - pymdownx.tabbed
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist
+  - pymdownx.blocks.details
+  - pymdownx.blocks.admonition
   - toc:
       permalink: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+
 
 nav:
   - Home: index.md
 
-  - Getting Started:
-      - Introduction: getting-started.md
-
   - User Guide:
       - Overview: user-guide/index.md
-      - Setup: user-guide/setup.md
-      - Input Formats: user-guide/formats.md
-      - Potential Energy Surfaces: user-guide/pes.md
-      - PES Templates: user-guide/pes-templates.md
-      - Annotated Input: user-guide/annotated-input.md
-      - Move Files: user-guide/move-files.md
-      - Forbid Files: user-guide/forbid-files.md
+      - Compilation and setup: user-guide/setup.md
+      - Annotated input: user-guide/annotated-input.md
+      - Structure formats: user-guide/formats.md
+      - PES calculations: user-guide/pes.md
+      - PES templates: user-guide/pes-templates.md
+      - Move-file format: user-guide/move-files.md
+    #   - Forbid Files: user-guide/forbid-files.md
       - Hints: user-guide/hints.md
       - References: user-guide/references.md
 
@@ -53,5 +65,3 @@ nav:
   - API Reference:
       - Overview: api/index.md
 
-  - Developer Guide:
-      - Overview: developer-guide/index.md
