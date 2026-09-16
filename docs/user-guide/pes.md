@@ -1,80 +1,87 @@
-### PES evaluations {#PES}
+### PES evaluations in CDE {#PES}
 
-CDE can call several external programs to obtain energies and forces on atoms during GDS and NEB runs. This section describes how this is managed, and how input files can be set-up to run different external codes.
+CDE can call several *external* programs to obtain energies and forces on atoms during GDS and NEB runs. This section describes how this process is managed, and how input files can be set-up to run different external codes.
 
-## PES types
-
-- The potential energy surface (PES) type to be used during a CDE-based calculation is indicated through the variables **pestype** and **pesopttype**.
-
-- The **pestype** is used whenever the code requires a single-point energy evaluation.
-
-- The current allowed values of **pestype** are (see pes.f90):
-	- *orca*: Performs a calculation using the quantum chemical program ORCA (https://orcaforum.cec.mpg.de)
-
-	- *dftb*: Performs a calculation using the density-functional tight-binding code DFTB+ (https://www.dftbplus.org)
-
-	- *psi4*: Performs a calculation using the psi-4 quantum code (http://www.psicode.org)
-
-	- *lammps*: Performs a calculation of the PES using the LAMMPS simulation package (https://lammps.sandia.gov)
-
-	- *xtb*: Performs a calculation using the standalone xTB code (https://github.com/grimme-lab/xtb)
-
-	- *aims*: Performs a calculation using the FHI-aims electronic structure code (https://fhi-aims.org/)
-
-	- *null*: Does not perform a PES evaluation. Simply returns V = 0 and forces(:) = 0 for all atoms.
+!!! Warning
+	CDE does not include any internal/native PES evaluation routines - external codes must be used.
 
 
-- The **pesopttype** is used whenever the code requires a geometry optimization.
+## Defining single-point energy calculations 
 
-- The allowed values of **pesopttype** are:
-	- *orca*: ORCA calculation.
+The potential energy surface (PES) type to be used during a CDE-based calculation is indicated through the keywords `pestype` and `pesopttype`.
 
-	- *dftb*: DFTB+ calculation.
+- `pestype` is used whenever the code requires a single-point energy evaluation.
 
-	- *psi4*: Psi-4 calculation.
+- The current allowed values of `pestype` are (see pes.f90):
 
-	- *lammps*: LAMMPS calculation.
+| `pestype` | Description |
+| :--- | :--- |
+| `orca` | Uses the quantum chemical program ORCA (<https://orcaforum.cec.mpg.de>) |
+| `dftb` | Uses the density-functional tight-binding code DFTB+ (<https://www.dftbplus.org>) |
+| `psi4` | Uses the Psi4 quantum chemistry package (<http://www.psicode.org>) |
+| `lammps` | Uses the PES using the LAMMPS simulation package (<https://lammps.sandia.gov>) |
+| `xtb` | Uses the standalone xTB code (<https://github.com/grimme-lab/xtb>) |
+| `aims` | Uses the FHI-aims electronic structure code (<https://fhi-aims.org/>) |
+| `null` | Does not perform a PES evaluation. Simply returns `V = 0` and `forces(:) = 0` for all atoms. |
 
-	- *uff*: Performs geometry optimization under the UFF (Universal force-field) as implemented in babel/openbabel (http://openbabel.org/wiki/Main_Page)
+## Defining geometry optimization calculations 
 
-	- *xtb*: xTB calculation.
+- The `pesopttype` is used whenever the code requires a geometry optimization.
 
-	- *aims*: FHI-aims calculation.
+- The allowed values of `pesopttype` are:
 
-	- *null*: Does not perform geometry optimization.
+| `pesopttype` | Description |
+2
+| :--- | :--- |
+3
+| `orca` | ORCA calculation. |
+4
+| `dftb` | DFTB+ calculation. |
+5
+| `psi4` | Psi4 calculation. |
+6
+| `lammps` | LAMMPS calculation. |
+7
+| `uff` | Performs geometry optimization using the UFF (Universal Force Field) as implemented in Babel/Open Babel (<http://openbabel.org/wiki/Main_Page>). |
+8
+| `xtb` | xTB calculation. |
+9
+| `aims` | FHI-aims calculation. |
+10
+| `null` | Does not perform geometry optimization. |
 
-- To add new PES evaluation types, you need to edit the files pes.f90 and io.f90; **DO NOT DO THIS UNLESS YOU ARE SURE YOU KNOW WHAT YOU ARE DOING!**
 
-## PES and geometry optimization executables
+## Defining PES calculation executables
 
-As well as knowing which type of PES calculation you'd like, the CDE code needs to know *how* to run the external executables which are requested to calculate potential energies and forces, or to run geometry optimizations.
+As well as knowing which type of PES calculation to perform, `cde` needs to know *how* to run the external executables which are requested to calculate potential energies and forces, or to run geometry optimizations.
 
-The executables to be used to energy evaluations or geometry optimization are defined in the variables *pesexecutable* and *pesoptexecutable*, as follows:
+The executables to be used to energy evaluations or geometry optimization are defined in the variables `pesexecutable` and `pesoptexecutable`, as in the following input-file lines:
 
     pesexecutable ~/programs/orca
     pesoptexecutable ~/programs/orca
 
-In the example above, we're are indicating that the external program to be used is *orca*, and this is stored in the directory *~/programs/*.
+In the example above, we're are indicating that the external program to be used is `orca`, and this is stored in the directory `~/programs/`.
 
-Internally, CDE runs FORTRAN *EXECUTE_COMMAND_LINE* calls to run external codes, using input files generated according to templates provided as *pesfile* and *pesoptfile* (see below).
+Internally, CDE runs FORTRAN `EXECUTE_COMMAND_LINE` calls to run external codes, using input files generated according to templates provided as `pesfile` and `pesoptfile` (see the section on PES templates).
 
-For example, based on the above, CDE will run the following command when an *ORCA* calculation is required:
+For example, based on the above, CDE will run the following command when an `orca` calculation is required:
 
 	~/programs/orca temp.in
 
-where *temp.in* is the name of a temporary input file which is auto-generated by CDE during NEB calculations.
+where `temp.in` is the name of a temporary input file which is auto-generated by CDE during PES calculations.
 
-**If there is no executable called "~/programs/orca", the CDE calculation will fail!**
+!!! Warning
+	If there is no executable called `~/programs/orca`, the CDE calculation will fail. You should check that your PES executables and template files run as a stand-alone example, before trying to perform calculations through `cde`.
 
 To make sure everything runs smoothly, there are two useful options:
 
-(1) You can set up an alias for each executable, then provide the alias as *pesexecutable* and *pesoptexecutable*. For example, lets say you have *ORCA* installed in *~/programs/stuff/orca/bin/*. If you include an alias in your *.bashrc* (or similar config file if you're on a different system) which reads
+(1) You can set up an alias for each executable, then provide the alias as `pesexecutable` and `pesoptexecutable`. For example, lets say you have `orca` installed in `~/programs/stuff/orca/bin/`. If you include an alias in your `.bashrc` (or similar config file if you're on a different system) which reads:
 
 	alias orca='~/programs/stuff/orca/bin/orca'
 
-then running the command *orca* will then execute *~/programs/stuff/orca/bin/orca*, which should indeed correspond to an executable binary.
+then running the command `orca` will then execute `~/programs/stuff/orca/bin/orca`, which should indeed correspond to an executable binary.
 
-This means that you can then use the following in your CDE input files:
+This means that you can then use the following in your `cde` input files:
 
 
     pesexecutable orca
@@ -82,59 +89,9 @@ This means that you can then use the following in your CDE input files:
 
 without having to provide the full path to the executables.
 
-(2) As an alternative, you can also give the full pathname to the desired executable directly in the input file, lik this:
+(2) As an alternative, you can also give the full pathname to the desired executable directly in the input file, like this:
 
       pesexecutable ~/programs/stuff/orca/bin/orca
       pesoptexecutable ~/programs/stuff/orca/bin/orca
 
 
-## PES template files
-
-- The final pieces of information which CDE requires in order to perform energy evaluations or geometry optimization is a PES *template file*.
-
-- The input parameters **pesfile** and **pesoptfile** are header files which are used to direct external codes which calculation to perform when they are called by CDE. These header files must have the same format as input files required by the *pesexecutable* and *pesoptexecutable*.
-
-- The only difference is that there must be a line with *XXX* as follows:
-
-
-		XXX
-
-- The *XXX* tells the CDE code where it should insert the coordinates of the configuration at which the energy evaluation is requested. After inserting the coordinates, CDE writes the input file then runs the relevant external executable to evaluate the energy. Once the energy evaluation (or geometry optimization) is complete, CDE reads in the results.
-- The file pes.f90 can be consulted to see how this write/run/read process works for each external code.
-- An example header file for a PES evaluation by ORCA using PM3 semi-empirical method might be as follows:
-
-
-	! PM3
-	* xyz 0 1
-	XXX
-	*
-
-
-- An example header file for PES evaluation by DFTB+ might be as follows:
-
-
-	 Geometry = GenFormat {
-	XXX
- 	}
- 	Driver = {}
-	 Hamiltonian = DFTB {
-	 SCC = Yes
-	 SCCTolerance = 1e-3
-	 Mixer = Broyden{}
-	 Eigensolver = RelativelyRobust {}
- 	MaxAngularMomentum {
-	 C = "p"
- 	O = "p"
- 	H = "s"
-	 }
- 	SlaterKosterFiles = Type2FileNames {
- 	Prefix = "/Users/scott/code/cde/src/SKfiles/"
-	 Separator = "-"
-	 Suffix = ".skf"
-	 }
- 	}
- 	Analysis = {
- 	CalculateForces = Yes
-	 }
-
-- Note in the above examples that the only part of the file which is written by CDE is in replacing the *XXX* with the coordinates at which the energy evaluation is being performed. All other aspects, such as the calculation type (e.g. DFT, Hartree-Fock, semi-empirical, DFTB+), basis sets, accuracy, and so on, are controlled by editing the *pesfile* and *pesoptfile* BEFORE the calculation starts.

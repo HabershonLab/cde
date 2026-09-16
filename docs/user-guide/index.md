@@ -9,7 +9,7 @@ This section documents the CDE input files, potential energy surface (PES) inter
 
 ## Input and output files formats
 
-- [Annotated input files](annotated-input.md)
+- [Input file format](annotated-input.md)
 - [Structure formats](formats.md)
 - [Move-file format](move-files.md)
 <!-- - [Forbid Files](forbid-files.md) -->

@@ -1,5 +1,3 @@
-## Annotated input file description ## {#Annotated}
-
 This page describes the allowed input parameters, and a description of what they do. Please note the following:
 
 - Note that input-file keywords are case-sensitive - everything should be lower-case!
@@ -7,7 +5,7 @@ This page describes the allowed input parameters, and a description of what they
 - Blank lines are ignored.
 - Keywords can appear in any order.
 
-## Input file examples
+<!-- ## Input file examples
 
 Select your desired `calctype` below to view its specific required fields and configuration schema.
 
@@ -29,7 +27,7 @@ Select your desired `calctype` below to view its specific required fields and co
       project_id: "<string>"
       bucket_name: "<string>"
       credentials_json: "<string>"
-    ```
+    ``` -->
 
 
 ## General input parameters

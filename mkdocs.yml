@@ -44,13 +44,13 @@ nav:
   - User Guide:
       - Overview: user-guide/index.md
       - Compilation and setup: user-guide/setup.md
-      - Annotated input: user-guide/annotated-input.md
+      - Input files: user-guide/annotated-input.md
       - Structure formats: user-guide/formats.md
       - PES calculations: user-guide/pes.md
       - PES templates: user-guide/pes-templates.md
       - Move-file format: user-guide/move-files.md
     #   - Forbid Files: user-guide/forbid-files.md
-      - Hints: user-guide/hints.md
+      - Hints and tips: user-guide/hints.md
       - References: user-guide/references.md
 
   - Tutorials:
