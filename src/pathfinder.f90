@@ -141,6 +141,11 @@ contains
     write(logfile,'(/"* Reading reactant structure...")')
     Call ReadCXS( cx_start, startfile )
     Call SetMass(cx_start)
+
+
+    Call AbInitio( cx_start, 'optg', success )
+    Call PrintCXSToFile(cx_start,'optimized_start.xyz',0.d0)
+    
     Call GetGraph( cx_start )
     Call Getmols(cx_start)
     Call PrintCXSGraphInfo(cx_start,logfile,"Reactant structure")
@@ -148,9 +153,16 @@ contains
     write(logfile,'(/"* Reading product structure...")')
     Call ReadCXS( cx_end, endfile )
     Call SetMass(cx_end)
+
+    Call AbInitio( cx_end, 'optg', success )
+    Call PrintCXSToFile(cx_end,'optimized_end.xyz',0.d0)
+
+
     Call GetGraph( cx_end )
     Call Getmols(cx_end)
     Call PrintCXSGraphInfo(cx_end,logfile,"Product structure")
+
+
 
 
     ! Allocate space for atomchange and bondchange arrays - these will indicate at each MC search
@@ -237,16 +249,10 @@ contains
     Call GetPathFitness( cx_start, cx_end, cx, nrxn, movenum, moveatoms, errflag, &
     GraphError, TotalError, vbe )
 
-!     print*,'ERROR = ',GraphError
-
-!  Call GraphsToCoords(cx_start, cx, nrxn, .TRUE., 'final_path.xyz' )
-! stop
 
     ! If an error flag is returned here, something is wrong with the initial path....
     !
-    if (errflag)Stop '* Initial errflag for path is TRUE - something weird going'
-    ! &
-    !on with initial path....go check it out....'
+    if (errflag)Stop '* Initial errflag for path is TRUE - something weird going on'
 
 
     ! Output initial errors to logfile.
@@ -287,6 +293,7 @@ contains
       !
       Call UpdateMechanism(nrxn,movenum,moveatoms,bondchange,atomchange,na,cx_start,cx,rxindex,cyc,&
       movenum_store, moveatoms_store)
+     ! print*,cyc
       if (cyc) cycle outer
 
 
@@ -294,6 +301,7 @@ contains
       !
       Call GetPathFitness( cx_start, cx_end, cx, nrxn, movenum, moveatoms, errflag, &
       GraphError, TotalError, vbe )
+   !   print*,'GRAPH ERR = ',grapherror,errflag
 
 
       ! Check for convergence, based on GRAPHERROR!!!
@@ -355,7 +363,7 @@ contains
       write(logfile,'("               xyz output files WILL NOT be printed out!        ")')
       write(logfile,'("NOPE! =========================================================="/)')
       call flush(logfile)
-      stop
+    !  stop
     endif
 
     ! After finishing optimization, propagate the final string, evaluate the error
@@ -367,12 +375,18 @@ contains
     ! At this point, we find the first instance of the target molecule(s)
     ! being formed then set the remainder of movenum to be zero....
     !
-    Call TrimPath(cx_start, cx_end, cx, nrxn, movenum, moveatoms, iend )
+   !! Call TrimPath(cx_start, cx_end, cx, nrxn, movenum, moveatoms, iend )
 
     ! Print molecules generated along reaction:
     !
     Call PrintMolsAlongPath( nrxn, cx_start, cx_end, cx, movenum,chargemove, &
     changecharges,moveatoms )
+
+    ! TEMP
+    ! Call GetGraph( cx(nrxn) )
+    ! Call Getmols(cx(nrxn))
+    Call PrintCXSGraphInfo(cx(nrxn),logfile,"BEFORE GRAPHS TO COORDS structure")
+    ! TEMP  
 
 
     ! At this point, we need to turn graphs into coordinates....
@@ -381,6 +395,14 @@ contains
     write(logfile,'("* Reaction end-points printed to final_path.xyz"/)')
     Call GraphsToCoords(cx_start, cx, nrxn, .TRUE., 'final_path.xyz' )
     write(logfile,'("* Finished structure generation."/)')
+
+    Call GetGraph( cx(nrxn) )
+    Call Getmols(cx(nrxn))
+    Call PrintCXSGraphInfo(cx(nrxn),logfile,"END structure")
+
+    
+    Call PrintCXSGraphInfo(cx(nrxn),logfile,"FINAL Product structure information")
+
 
 
     ! Now we need to do error correction - if the end-point structures have changed due to geometry
@@ -398,7 +420,7 @@ contains
     !      write(logfile,'("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/")')
     !      write(logfile,'("*** CORRECTED MECHANISM ***")')
     !      Call PrintMolsAlongPath( nrxn, cx_start, cx_end, cx, movenum,chargemove,changecharges,moveatoms )
-    !
+    
     !     ! Recalcualte energy.
     !      write(6,*)'INTO AbInitio here...',cx_start%nmol;call flush(6)
     !     Call AbInitio( cx_start, 'ener', success )
@@ -406,7 +428,7 @@ contains
     !       print*,'INTO AbInitio here...',cx(i)%nmol,cx(i)%molcharge(1:cx(i)%nmol)
     !       Call AbInitio( cx(i), 'ener', success)
     !     enddo
-    !
+    
     !   endif
     ! endif
 
@@ -1105,34 +1127,34 @@ contains
 
     else if (igfunc == 1 .or. igfunc == 3) then
 
-      ! allocate( dist1(na,na), dsp1(na,na) )
-      !
-      ! do i = 1, na
-      !    do j = i, na
-      !      if ( cx1%graph(i,j) == 1) then
-      !        dist1(i,j) = 1.d0
-      !        dist1(j,i) = 1.d0
-      !      else
-      !        dist1(i,j) = BIG
-      !        dist1(j,i) = BIG
-      !      endif
-      !    enddo
-      !  enddo
-      !  Call GetShortestPaths(na,dist1,dsp1)
-      !
-      ! allocate( dist2(na,na), dsp2(na,na) )
-      !  do i = 1, na
-      !    do j = i, na
-      !      if ( cx2%graph(i,j) == 1) then
-      !        dist2(i,j) = 1.d0
-      !        dist2(j,i) = 1.d0
-      !      else
-      !        dist2(i,j) = BIG
-      !        dist2(j,i) = BIG
-      !      endif
-      !    enddo
-      !  enddo
-      !  Call GetShortestPaths(na,dist2,dsp2)
+      allocate( dist1(na,na), dsp1(na,na) )
+      
+      do i = 1, na
+         do j = i, na
+           if ( cx1%graph(i,j) == 1) then
+             dist1(i,j) = 1.d0
+             dist1(j,i) = 1.d0
+           else
+             dist1(i,j) = BIG
+             dist1(j,i) = BIG
+           endif
+         enddo
+       enddo
+       Call GetShortestPaths(na,dist1,dsp1)
+      
+      allocate( dist2(na,na), dsp2(na,na) )
+       do i = 1, na
+         do j = i, na
+           if ( cx2%graph(i,j) == 1) then
+             dist2(i,j) = 1.d0
+             dist2(j,i) = 1.d0
+           else
+             dist2(i,j) = BIG
+             dist2(j,i) = BIG
+           endif
+         enddo
+       enddo
+       Call GetShortestPaths(na,dist2,dsp2)
 
       ! Calculate weighted path-distance matrices.
       !
@@ -1145,11 +1167,15 @@ contains
           id2 = LabelToNumber(label)
 
           if (igfunc == 1) then
-            A1(i,j) = dble(id1 * id2) * cx1%graph(i,j)
-            A2(i,j) = dble(id1 * id2) * cx2%graph(i,j)
+            !A1(i,j) = dble(id1 * id2) * cx1%graph(i,j)
+            !A2(i,j) = dble(id1 * id2) * cx2%graph(i,j)
+            A1(i,j) = dble(id1 * id2) * dsp1(i,j)
+            A2(i,j) = dble(id1 * id2) * dsp2(i,j)
           else if (igfunc == 3) then
-            A1(i,j) = cx1%graph(i,j)
-            A2(i,j) = cx2%graph(i,j)
+            !A1(i,j) = cx1%graph(i,j)
+            !A2(i,j) = cx2%graph(i,j)
+            A1(i,j) = dsp1(i,j)
+            A2(i,j) = dsp2(i,j)
           endif
 
           if (i /= j) then
@@ -1182,10 +1208,10 @@ contains
       !  error = error * 1d-3
 
       deallocate(work)
-      ! deallocate(dsp1)
-      ! deallocate(dist1)
-      ! deallocate(dsp2)
-      ! deallocate(dist2)
+      deallocate(dsp1)
+      deallocate(dist1)
+      deallocate(dsp2)
+      deallocate(dist2)
       deallocate(eigval1)
       deallocate(eigval2)
 
@@ -1593,7 +1619,7 @@ contains
       endif
 
 
-   !   write(6,*)'HERE 1',imove
+     !   write(6,*)'HERE 1',imove
 
       ! If we get here, we're actually doing a reaction...
       !
@@ -1615,7 +1641,7 @@ contains
         endif
       enddo
 
-!      print*,'HERE2'
+      ! print*,'HERE2'
 
 !      do i = 1, namove(imove)-1
 !        do j = i+1, namove(imove)
@@ -1641,7 +1667,7 @@ contains
       enddo
 
 
-   !   print*,'HERE3'
+     ! print*,'HERE3'
 
 
       ! Check that the selected atoms match the graph.
@@ -1719,6 +1745,7 @@ contains
 
       ! Check that the final valences are sensible.
       !
+    !  print*,'NOW 1'
       do i = 1, na
         sum = 0
         do j = 1, na
@@ -1732,10 +1759,12 @@ contains
             if (sum < valrange(k,1)) then
               !    error = error + atemp*(sum-valrange(k,1))**2
               errflag = .TRUE.
+        !      print*,'NOW 2',sum,cx(irxn)%atomlabel(i),trim(valatom(k))
               exit outer
             else if ( sum > valrange(k,2))then
 
               errflag = .TRUE.
+           !   print*,'NOW 3'
               exit outer
               !error = error + atemp*(sum-valrange(k,2))**2
 
@@ -2409,9 +2438,15 @@ contains
       write(93,'("Starting structure.",1x,"Energy in au =",1x,f14.8)') &
       cx_start%vcalc
       do j = 1, na
+        if (cx_start%atomlabel(j).ne.'LJ') then
         x = cx_start%r(1,j) * bohr_to_ang
         y = cx_start%r(2,j) * bohr_to_ang
         z = cx_start%r(3,j) * bohr_to_ang
+        else
+        x = cx_start%r(1,j) 
+        y = cx_start%r(2,j) 
+        z = cx_start%r(3,j) 
+        endif
         write(93,'(a2,2x,3(f14.8,2x))')cx_start%atomlabel(j),x,y,z
       enddo
       call flush(93)
@@ -2460,22 +2495,20 @@ contains
       ! NEW - optimize under double-ended GRP.
       !
       if (irxn == 1) then
-        Call OptimizeGRP_DoubleEnded(cx(irxn), cx_start, success, gdsrestspring, nbstrength, nbrange, &
-        kradius, ngdsrelax, gdsdtrelax )
+       ! Call OptimizeGRP_DoubleEnded(cx(irxn), cx_start, success, gdsrestspring, nbstrength, nbrange, &
+       ! kradius, ngdsrelax, gdsdtrelax )
+        call OptimizeGRPForceConv(cx(irxn), success, gdsrestspring, nbstrength, nbrange, &
+        & kradius, ngdsrelax, gdsdtrelax)
       else
-        Call OptimizeGRP_DoubleEnded(cx(irxn), cx(irxn-1), success, gdsrestspring, nbstrength, nbrange, &
-        kradius, ngdsrelax, gdsdtrelax )
+        !Call OptimizeGRP_DoubleEnded(cx(irxn), cx(irxn-1), success, gdsrestspring, nbstrength, nbrange, &
+        !kradius, ngdsrelax, gdsdtrelax )
+        Call OptimizeGRPForceConv(cx(irxn), success, gdsrestspring, nbstrength, nbrange, &
+        & kradius, ngdsrelax, gdsdtrelax)
       endif
 
-      !  Call PrintCXSToFile(cx(irxn),'temp2.xyz',1.d0)
-
-      ! Call GetMols( cx(irxn) ) need this?
-
-      ! print*,'NMOL AFTER OptGRP = ',cx(irxn)%nmol
-      !  stop
       if (.not.success)then
-        !    print*,'WTF'
-        !    stop
+        print*,'Fail in GraphsToCoords - success flag is .false. after OptimizeGRP_DoubleEnded for structure: ',irxn
+        ! stop
       endif
 
       ! If requested by user, perform geometry optimization after move.
@@ -2508,10 +2541,16 @@ contains
         write(93,'(i5)')na
         write(93,'("Product of reaction",1x,i3,1x,"Energy in au =",1x,f14.8)') &
         irxn,cx(irxn)%vcalc
-        do j = 1, na
-          x = cx(irxn)%r(1,j) * bohr_to_ang
-          y = cx(irxn)%r(2,j) * bohr_to_ang
-          z = cx(irxn)%r(3,j) * bohr_to_ang
+        do j = 1, na         
+               if (cx(irxn)%atomlabel(j).ne.'LJ') then
+        x = cx(irxn)%r(1,j) * bohr_to_ang
+        y = cx(irxn)%r(2,j) * bohr_to_ang
+        z = cx(irxn)%r(3,j) * bohr_to_ang
+        else
+        x = cx(irxn)%r(1,j) 
+        y = cx(irxn)%r(2,j) 
+        z = cx(irxn)%r(3,j) 
+        endif
           write(93,'(a2,2x,3(f14.8,2x))')cx(irxn)%atomlabel(j),x,y,z
         enddo
         call flush(93)
@@ -2867,7 +2906,7 @@ contains
     logical :: success, idppguess, do_final
     real(8) :: maxbarrier,bsum, brxn
 
-    print*,'WTF1'
+  !  print*,'WTF1'
 
 !    maxbarrier = -1d6
 !    if (present(cx_end)) then
@@ -2876,7 +2915,7 @@ contains
       do_final = .False.
 !    endif
 
-    print*,'WTF2'
+   ! print*,'WTF2'
     ! Set number of atoms.
     !
     na = cx_start%na
@@ -2886,14 +2925,14 @@ contains
     Call NewPath(rp, .FALSE., startfile, endfile, pathfile, nimage, &
     pathinit, .TRUE., na)
 
-    print*,'WTF3'
+    ! print*,'WTF3'
 
     ! Loop over each reaction.
     !
     open(95,file=trim(file_root)//'_energy.dat')
     bsum = 0.d0
     outer3: do irxn = 1, nrxn+1
-         print*,'NOW:',irxn,nrxn
+      !   print*,'NOW:',irxn,nrxn
 
       ! Set the CX for the end-point of this reaction.
       ! First, deal with the first reaction.
@@ -2927,21 +2966,19 @@ contains
         rp%cx(nimage) = cx(irxn)
       endif
       Call SetPathConstraints(rp, NDOFconstr, FixedDOF, Natomconstr, Fixedatom)
-      print*,'WTF4'
+
       ! Set as linear path - this needs to be done to give sensible initial
       ! coordinates to the internal beads before IDPP (if required).
       !
       rp%coeff(:,:,:) = 0.0
       Call FourierToPath( rp )
 
-      print*,'WTF4'
       ! Use the Fourier coefficients to calculate the initial path.
       !
       if (idpppath) then
         Call FindIDPPPath( rp, NEBIter*250, NEBConv*0.1d0, NEBstep, NEBspring)
       endif
 
-      print*,'WTF4'
 
       ! Could put NEB here.....
 

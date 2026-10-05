@@ -348,6 +348,9 @@ contains
     case('G1')
        LabelToNumber = 87
 
+    case('LJ')
+       LabelToNumber = 88
+
     case default
        stop '* Error in LabelToNumber in structure.f90'
 
@@ -634,6 +637,9 @@ contains
     case(87)
        NumberToLabel = 'G1'
 
+    case(88)
+       NumberToLabel = 'LJ'
+       
     case default
        stop '* Error in NumberToLabel in structure.f90'
 

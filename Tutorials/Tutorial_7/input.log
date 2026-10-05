@@ -1,0 +1,994 @@
+
+************************ CDE simulation ************************
+
+- Start date:    02/10/2026
+- Start time:    16:16:29
+
+- The input filename is: input                                             
+
+================================================================
+                INPUT FILE INTERPRETATION FOLLOWS               
+================================================================
+
+- The input filename is: input                                             
+
+# COMMENT: Pathfinder calculation for LJ cluster.                                                              
+
+- Calculation type:  REACTION-PATH FINDER
+- Random number seed:    82
+- PES geometry optimization after graph move?:  F
+- PES evaluations for FULL system being used...
+- Number of images per path:    10
+- Start-point structure file:  start_scaled.xyz                                  
+- End-point structure file:  end_scaled.xyz                                    
+- IDPP interpolation :  F
+
+- Path refinement method:  CLIMBING-IMAGE NUDGED ELASTIC BAND
+- (CI)NEB optimization method:  QUICKMIN
+- Maximum number of NEB iteractions:      25
+- Climbing-image start criterion (au):      0.00050000
+- NEB spring constant:        0.050000
+- NEB optimization step-size:        0.100000
+- NEB output frequency:       5
+- Strip inactive molecules before path optimization?:  F
+- Optimize end-points before NEB run:  T
+- Optimize end-points during NEB run:  F
+- Use graph-restrain potential during NEB:  F
+
+- Number of fixed DOFs:     0
+- Number of fixed atoms:     0
+
+- PES type:  LJ
+- PES calculation template file:  xtb.head
+- PES type for geometry optimization:  LJ
+- Geometry optimisation template file:  xtb.head
+- PES calculation executable:  xtb
+- PES geometry optimization executable:  xtb
+
+- Graph-moves file:  moves.in                                          
+- GDS attempt probability:      0.50000000
+- Spring constant for inter-bead springs:      0.05000000
+- Spring constant for bonded-graph restraints:      0.05000000
+- Strength of non-bonded exponential graph restraints:      0.10000000
+- Range of non-bonded exponential graph restraints:      3.00000000
+- Spring constant for intermolecular repulsion restraints:      0.04000000
+- Number of SD steps after GDS graph move:    10000
+- GDS SD relaxation step-size:      0.10000000
+- GDS output frequency:       10
+
+- Number of valence range constraints:     1
+- Valence range constraint:    1 Ar    0   12
+
+- Number of reactive atom types:     1
+- Reactive atom labels:  Ar
+
+
+- Number of reactive valence constraints:     0
+
+- Fixed bonds for GDS:
+
+- Number of allowed bonding constraints:     0
+
+- Number of reactions in sampled strings for pathfinder:    40
+- Number of MC steps in pathfinder calculation::  4000000
+- Initial temperature for pathfinder (in K):      0.1000E+04
+- Pathfinding function type: Eigenvalue comparison 2
+
+================================================================
+                 END OF INPUT FILE INTERPRETATION                   
+================================================================
+
+*************** Finished reading input parameters **************
+
+* Starting double-ended mechanism-finding calculation...
+
+* Running pathfinder calculation....
+
+* Optimization function information will be printed to mcopt.dat
+
+* Reading reactant structure...
+
+================================================================
+# Graph Info for CXS:  Reactant structure
+
+* Bonded atoms *
+
+* Atomic valencies *
+ Ar1    :    0
+ Ar2    :    0
+ Ar3    :    0
+ Ar4    :    0
+ Ar5    :    0
+ Ar6    :    0
+ Ar7    :    0
+ Ar8    :    0
+ Ar9    :    0
+ Ar10   :    0
+ Ar11   :    0
+ Ar12   :    0
+
+================================================================
+
+* Reading product structure...
+
+================================================================
+# Graph Info for CXS:  Product structure
+
+* Bonded atoms *
+ Ar1   - Ar4  
+ Ar1   - Ar5  
+ Ar1   - Ar7  
+ Ar1   - Ar8  
+ Ar1   - Ar12 
+ Ar2   - Ar3  
+ Ar2   - Ar4  
+ Ar2   - Ar6  
+ Ar2   - Ar9  
+ Ar2   - Ar12 
+ Ar3   - Ar5  
+ Ar3   - Ar6  
+ Ar3   - Ar10 
+ Ar3   - Ar12 
+ Ar4   - Ar7  
+ Ar4   - Ar9  
+ Ar4   - Ar12 
+ Ar5   - Ar8  
+ Ar5   - Ar10 
+ Ar5   - Ar12 
+ Ar6   - Ar9  
+ Ar6   - Ar10 
+ Ar6   - Ar11 
+ Ar6   - Ar12 
+ Ar7   - Ar8  
+ Ar7   - Ar9  
+ Ar7   - Ar11 
+ Ar7   - Ar12 
+ Ar8   - Ar10 
+ Ar8   - Ar11 
+ Ar8   - Ar12 
+ Ar9   - Ar11 
+ Ar9   - Ar12 
+ Ar10  - Ar11 
+ Ar10  - Ar12 
+ Ar11  - Ar12 
+
+* Atomic valencies *
+ Ar1    :    5
+ Ar2    :    5
+ Ar3    :    5
+ Ar4    :    5
+ Ar5    :    5
+ Ar6    :    6
+ Ar7    :    6
+ Ar8    :    6
+ Ar9    :    6
+ Ar10   :    6
+ Ar11   :    6
+ Ar12   :   11
+
+================================================================
+
+* Reading graph moves file...
+* Graph moves input file: moves.in
+
+================================================================
+              MOVE FILE INTERPRETATION FOLLOWS...               
+================================================================
+
+Comment line: 
+# Both 2-atom and 3-atom moves allowed. Bond-making moves favoured.
+
+*** Graph move number:    1 ***
+
+- Number of atoms:    2
+- Bond-changing move detected 
+- Start graph: 
+  0  1
+  1  0
+- End graph: 
+  0  0
+  0  0
+- Allowed atom labels: 
+* * 
+Move probability: 0.100
+
+*** Graph move number:    2 ***
+
+- Number of atoms:    2
+- Bond-changing move detected 
+- Start graph: 
+  0  0
+  0  0
+- End graph: 
+  0  1
+  1  0
+- Allowed atom labels: 
+* * 
+Move probability: 0.300
+
+================================================================
+                MOVE FILE INTERPRETATION COMPLETE               
+================================================================
+
+* Finished reading graph moves file...
+
+* Setting all initial moves to null...
+
+* Initial Graph Error =   **********
+
+* Initial Total Error =   **********
+
+*** Starting reaction-path search ***
+
+================================================================
+            SUCCESSFULLY LOCATED ZERO_ERROR MECHANISM           
+================================================================
+
+*********  Molecular analysis of final reaction-string  ********
+
+======== Start-point molecules ========
+
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar1                 
+
+- Molecule number:      3
+- Chemical formula:   Ar1                 
+
+- Molecule number:      4
+- Chemical formula:   Ar1                 
+
+- Molecule number:      5
+- Chemical formula:   Ar1                 
+
+- Molecule number:      6
+- Chemical formula:   Ar1                 
+
+- Molecule number:      7
+- Chemical formula:   Ar1                 
+
+- Molecule number:      8
+- Chemical formula:   Ar1                 
+
+- Molecule number:      9
+- Chemical formula:   Ar1                 
+
+- Molecule number:     10
+- Chemical formula:   Ar1                 
+
+- Molecule number:     11
+- Chemical formula:   Ar1                 
+
+- Molecule number:     12
+- Chemical formula:   Ar1                 
+
+=== Reaction number:      1
+
+- Selected move number:      2
+
+ - Atom numbers:            3           5
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar1                 
+
+- Molecule number:      3
+- Chemical formula:   Ar2                 
+
+- Molecule number:      4
+- Chemical formula:   Ar1                 
+
+- Molecule number:      5
+- Chemical formula:   Ar1                 
+
+- Molecule number:      6
+- Chemical formula:   Ar1                 
+
+- Molecule number:      7
+- Chemical formula:   Ar1                 
+
+- Molecule number:      8
+- Chemical formula:   Ar1                 
+
+- Molecule number:      9
+- Chemical formula:   Ar1                 
+
+- Molecule number:     10
+- Chemical formula:   Ar1                 
+
+- Molecule number:     11
+- Chemical formula:   Ar1                 
+
+=== Reaction number:      2
+
+- Selected move number:      2
+
+ - Atom numbers:           10           2
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar2                 
+
+- Molecule number:      3
+- Chemical formula:   Ar2                 
+
+- Molecule number:      4
+- Chemical formula:   Ar1                 
+
+- Molecule number:      5
+- Chemical formula:   Ar1                 
+
+- Molecule number:      6
+- Chemical formula:   Ar1                 
+
+- Molecule number:      7
+- Chemical formula:   Ar1                 
+
+- Molecule number:      8
+- Chemical formula:   Ar1                 
+
+- Molecule number:      9
+- Chemical formula:   Ar1                 
+
+- Molecule number:     10
+- Chemical formula:   Ar1                 
+
+=== Reaction number:      3
+
+- Selected move number:      2
+
+ - Atom numbers:           10           9
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar3                 
+
+- Molecule number:      3
+- Chemical formula:   Ar2                 
+
+- Molecule number:      4
+- Chemical formula:   Ar1                 
+
+- Molecule number:      5
+- Chemical formula:   Ar1                 
+
+- Molecule number:      6
+- Chemical formula:   Ar1                 
+
+- Molecule number:      7
+- Chemical formula:   Ar1                 
+
+- Molecule number:      8
+- Chemical formula:   Ar1                 
+
+- Molecule number:      9
+- Chemical formula:   Ar1                 
+
+=== Reaction number:      4
+
+- Selected move number:      2
+
+ - Atom numbers:           11           7
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar3                 
+
+- Molecule number:      3
+- Chemical formula:   Ar2                 
+
+- Molecule number:      4
+- Chemical formula:   Ar1                 
+
+- Molecule number:      5
+- Chemical formula:   Ar1                 
+
+- Molecule number:      6
+- Chemical formula:   Ar2                 
+
+- Molecule number:      7
+- Chemical formula:   Ar1                 
+
+- Molecule number:      8
+- Chemical formula:   Ar1                 
+
+=== Reaction number:      5
+
+- Selected move number:      2
+
+ - Atom numbers:            3           2
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar5                 
+
+- Molecule number:      3
+- Chemical formula:   Ar1                 
+
+- Molecule number:      4
+- Chemical formula:   Ar1                 
+
+- Molecule number:      5
+- Chemical formula:   Ar2                 
+
+- Molecule number:      6
+- Chemical formula:   Ar1                 
+
+- Molecule number:      7
+- Chemical formula:   Ar1                 
+
+=== Reaction number:      6
+
+- Selected move number:      2
+
+ - Atom numbers:            3          10
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar5                 
+
+- Molecule number:      3
+- Chemical formula:   Ar1                 
+
+- Molecule number:      4
+- Chemical formula:   Ar1                 
+
+- Molecule number:      5
+- Chemical formula:   Ar2                 
+
+- Molecule number:      6
+- Chemical formula:   Ar1                 
+
+- Molecule number:      7
+- Chemical formula:   Ar1                 
+
+=== Reaction number:      7
+
+- Selected move number:      2
+
+ - Atom numbers:           12           9
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar6                 
+
+- Molecule number:      3
+- Chemical formula:   Ar1                 
+
+- Molecule number:      4
+- Chemical formula:   Ar1                 
+
+- Molecule number:      5
+- Chemical formula:   Ar2                 
+
+- Molecule number:      6
+- Chemical formula:   Ar1                 
+
+=== Reaction number:      8
+
+- Selected move number:      2
+
+ - Atom numbers:            9           6
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar7                 
+
+- Molecule number:      3
+- Chemical formula:   Ar1                 
+
+- Molecule number:      4
+- Chemical formula:   Ar2                 
+
+- Molecule number:      5
+- Chemical formula:   Ar1                 
+
+=== Reaction number:      9
+
+- Selected move number:      2
+
+ - Atom numbers:            8           6
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar8                 
+
+- Molecule number:      3
+- Chemical formula:   Ar1                 
+
+- Molecule number:      4
+- Chemical formula:   Ar2                 
+
+=== Reaction number:     10
+
+- Selected move number:      0
+
+ - Null move
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar8                 
+
+- Molecule number:      3
+- Chemical formula:   Ar1                 
+
+- Molecule number:      4
+- Chemical formula:   Ar2                 
+
+=== Reaction number:     11
+
+- Selected move number:      2
+
+ - Atom numbers:           12           2
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar8                 
+
+- Molecule number:      3
+- Chemical formula:   Ar1                 
+
+- Molecule number:      4
+- Chemical formula:   Ar2                 
+
+=== Reaction number:     12
+
+- Selected move number:      2
+
+ - Atom numbers:            6           2
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar8                 
+
+- Molecule number:      3
+- Chemical formula:   Ar1                 
+
+- Molecule number:      4
+- Chemical formula:   Ar2                 
+
+=== Reaction number:     13
+
+- Selected move number:      2
+
+ - Atom numbers:            4           2
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar9                 
+
+- Molecule number:      3
+- Chemical formula:   Ar2                 
+
+=== Reaction number:     14
+
+- Selected move number:      2
+
+ - Atom numbers:           10           5
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar9                 
+
+- Molecule number:      3
+- Chemical formula:   Ar2                 
+
+=== Reaction number:     15
+
+- Selected move number:      2
+
+ - Atom numbers:           11           4
+- Molecule number:      1
+- Chemical formula:   Ar1                 
+
+- Molecule number:      2
+- Chemical formula:   Ar11                
+
+=== Reaction number:     16
+
+- Selected move number:      2
+
+ - Atom numbers:            2           1
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     17
+
+- Selected move number:      2
+
+ - Atom numbers:            7           1
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     18
+
+- Selected move number:      0
+
+ - Null move
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     19
+
+- Selected move number:      2
+
+ - Atom numbers:           12           7
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     20
+
+- Selected move number:      2
+
+ - Atom numbers:            8           5
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     21
+
+- Selected move number:      0
+
+ - Null move
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     22
+
+- Selected move number:      2
+
+ - Atom numbers:           10           6
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     23
+
+- Selected move number:      2
+
+ - Atom numbers:            3           9
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     24
+
+- Selected move number:      0
+
+ - Null move
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     25
+
+- Selected move number:      2
+
+ - Atom numbers:            8           2
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     26
+
+- Selected move number:      2
+
+ - Atom numbers:            4           1
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     27
+
+- Selected move number:      2
+
+ - Atom numbers:           11           5
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     28
+
+- Selected move number:      2
+
+ - Atom numbers:            2           5
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     29
+
+- Selected move number:      2
+
+ - Atom numbers:            7           4
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     30
+
+- Selected move number:      2
+
+ - Atom numbers:           11           3
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     31
+
+- Selected move number:      2
+
+ - Atom numbers:            8           1
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     32
+
+- Selected move number:      2
+
+ - Atom numbers:           12          11
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     33
+
+- Selected move number:      2
+
+ - Atom numbers:            5           4
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     34
+
+- Selected move number:      2
+
+ - Atom numbers:            9           2
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     35
+
+- Selected move number:      2
+
+ - Atom numbers:           11           2
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     36
+
+- Selected move number:      2
+
+ - Atom numbers:            3          12
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     37
+
+- Selected move number:      2
+
+ - Atom numbers:            2           7
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     38
+
+- Selected move number:      2
+
+ - Atom numbers:            8           4
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     39
+
+- Selected move number:      2
+
+ - Atom numbers:            6           1
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+=== Reaction number:     40
+
+- Selected move number:      2
+
+ - Atom numbers:            8          10
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+======== End-point molecules ========
+
+- Molecule number:      1
+- Chemical formula:   Ar12                
+
+********  Molecular analysis of reaction-string complete *******
+
+
+================================================================
+# Graph Info for CXS:  BEFORE GRAPHS TO COORDS structure
+
+* Bonded atoms *
+ Ar1   - Ar2  
+ Ar1   - Ar4  
+ Ar1   - Ar6  
+ Ar1   - Ar7  
+ Ar1   - Ar8  
+ Ar2   - Ar3  
+ Ar2   - Ar4  
+ Ar2   - Ar5  
+ Ar2   - Ar6  
+ Ar2   - Ar7  
+ Ar2   - Ar8  
+ Ar2   - Ar9  
+ Ar2   - Ar10 
+ Ar2   - Ar11 
+ Ar2   - Ar12 
+ Ar3   - Ar5  
+ Ar3   - Ar9  
+ Ar3   - Ar10 
+ Ar3   - Ar11 
+ Ar3   - Ar12 
+ Ar4   - Ar5  
+ Ar4   - Ar7  
+ Ar4   - Ar8  
+ Ar4   - Ar11 
+ Ar5   - Ar8  
+ Ar5   - Ar10 
+ Ar5   - Ar11 
+ Ar6   - Ar8  
+ Ar6   - Ar9  
+ Ar6   - Ar10 
+ Ar7   - Ar11 
+ Ar7   - Ar12 
+ Ar8   - Ar10 
+ Ar9   - Ar10 
+ Ar9   - Ar12 
+ Ar11  - Ar12 
+
+* Atomic valencies *
+ Ar1    :    5
+ Ar2    :   11
+ Ar3    :    6
+ Ar4    :    6
+ Ar5    :    6
+ Ar6    :    5
+ Ar7    :    5
+ Ar8    :    6
+ Ar9    :    5
+ Ar10   :    6
+ Ar11   :    6
+ Ar12   :    5
+
+================================================================
+* Generating structures from connectivity matrices...
+
+* Reaction end-points printed to final_path.xyz
+
+* Finished structure generation.
+
+
+================================================================
+# Graph Info for CXS:  END structure
+
+* Bonded atoms *
+ Ar1   - Ar2  
+ Ar1   - Ar4  
+ Ar1   - Ar6  
+ Ar1   - Ar7  
+ Ar1   - Ar8  
+ Ar2   - Ar3  
+ Ar2   - Ar4  
+ Ar2   - Ar5  
+ Ar2   - Ar6  
+ Ar2   - Ar7  
+ Ar2   - Ar8  
+ Ar2   - Ar9  
+ Ar2   - Ar10 
+ Ar2   - Ar11 
+ Ar2   - Ar12 
+ Ar3   - Ar5  
+ Ar3   - Ar9  
+ Ar3   - Ar10 
+ Ar3   - Ar11 
+ Ar3   - Ar12 
+ Ar4   - Ar5  
+ Ar4   - Ar7  
+ Ar4   - Ar8  
+ Ar4   - Ar11 
+ Ar5   - Ar8  
+ Ar5   - Ar10 
+ Ar5   - Ar11 
+ Ar6   - Ar8  
+ Ar6   - Ar9  
+ Ar6   - Ar10 
+ Ar7   - Ar11 
+ Ar7   - Ar12 
+ Ar8   - Ar10 
+ Ar9   - Ar10 
+ Ar9   - Ar12 
+ Ar11  - Ar12 
+
+* Atomic valencies *
+ Ar1    :    5
+ Ar2    :   11
+ Ar3    :    6
+ Ar4    :    6
+ Ar5    :    6
+ Ar6    :    5
+ Ar7    :    5
+ Ar8    :    6
+ Ar9    :    5
+ Ar10   :    6
+ Ar11   :    6
+ Ar12   :    5
+
+================================================================
+
+================================================================
+# Graph Info for CXS:  FINAL Product structure information
+
+* Bonded atoms *
+ Ar1   - Ar2  
+ Ar1   - Ar4  
+ Ar1   - Ar6  
+ Ar1   - Ar7  
+ Ar1   - Ar8  
+ Ar2   - Ar3  
+ Ar2   - Ar4  
+ Ar2   - Ar5  
+ Ar2   - Ar6  
+ Ar2   - Ar7  
+ Ar2   - Ar8  
+ Ar2   - Ar9  
+ Ar2   - Ar10 
+ Ar2   - Ar11 
+ Ar2   - Ar12 
+ Ar3   - Ar5  
+ Ar3   - Ar9  
+ Ar3   - Ar10 
+ Ar3   - Ar11 
+ Ar3   - Ar12 
+ Ar4   - Ar5  
+ Ar4   - Ar7  
+ Ar4   - Ar8  
+ Ar4   - Ar11 
+ Ar5   - Ar8  
+ Ar5   - Ar10 
+ Ar5   - Ar11 
+ Ar6   - Ar8  
+ Ar6   - Ar9  
+ Ar6   - Ar10 
+ Ar7   - Ar11 
+ Ar7   - Ar12 
+ Ar8   - Ar10 
+ Ar9   - Ar10 
+ Ar9   - Ar12 
+ Ar11  - Ar12 
+
+* Atomic valencies *
+ Ar1    :    5
+ Ar2    :   11
+ Ar3    :    6
+ Ar4    :    6
+ Ar5    :    6
+ Ar6    :    5
+ Ar7    :    5
+ Ar8    :    6
+ Ar9    :    5
+ Ar10   :    6
+ Ar11   :    6
+ Ar12   :    5
+
+================================================================
+* Reaction paths printed to final_path_rx_*.xyz
+ * Maximum barrier =    0.0000000000000000      kJ/mol
+ * Barrier sum =    0.0000000000000000      au
+
+================================================================
+                     CALCULATION COMPLETE                       
+================================================================
+

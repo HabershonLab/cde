@@ -1,0 +1,69 @@
+# Pathfinder calculation for LJ cluster.
+ 
+calctype pathfind 
+ranseed 82 
+optaftermove .false.
+pesfull .true.         
+nimage 10             
+startfile start_scaled.xyz
+endfile end_scaled.xyz
+idppguess .false.
+
+pathoptmethod cineb
+nebmethod quickmin 
+nebiter 25 
+cithresh 5d-4
+nebspring 0.05
+nebstep  0.1 
+neboutfreq 5
+stripinactive .false.
+optendsbefore .true.
+optendsduring .false.
+nebrestrend .false.
+
+dofconstraints 0
+atomconstraints 0
+
+pestype LJ 
+pesfile xtb.head
+pesopttype LJ 
+pesoptfile xtb.head
+pesexecutable xtb 
+pesoptexecutable xtb 
+
+movefile moves.in
+gdsthresh 0.5 
+gdsspring 0.05
+gdsrestspring 0.05
+nbstrength 0.1
+nbrange 3.0
+kradius 0.04
+ngdsrelax 10000
+gdsdtrelax 0.1
+gdsoutfreq 10
+
+valencerange{
+Ar 0 12 
+}
+
+reactiveatomtypes{  
+Ar 
+}
+
+reactiveatoms{  
+all
+}
+
+reactivevalence{
+}
+
+fixedbonds{
+}
+
+allowedbonds{
+} 
+
+nrxn 40                   ! Max number of reactions in mechanism
+nmcrxn 4000000           ! Number of iterations to search for mechanism
+mcrxntemp 1000.0      ! Initial search temperature for simulated annealing (leave!)
+graphfunctype 3          ! Permutationally invariant function (leave!)

@@ -87,6 +87,9 @@ contains
       ! xTB doesn't need an input file, so ignore.
     elseif (trim(pestype) == 'aims') then
       ! FHI-aims handles geometry and control files separately, so no need to insert geometry into a file.
+    elseif (trim(pestype) == 'LJ') then
+      ! Internal LJ potential, unitless.
+
     endif
 
     return
@@ -154,6 +157,10 @@ contains
       ! xTB doesn't need an input file, so ignore.
     elseif (trim(pestype) == 'aims') then
       ! FHI-aims handles geometry and control files separately, so no need to insert geometry into a file.
+
+    elseif (trim(pestype) == 'LJ') then
+      ! Internal LJ potential, unitless.
+
     endif
 
     return
@@ -252,6 +259,9 @@ contains
 
         case('aims')
           call AIMScalc(cx, minimize, success)
+        
+        case('LJ')
+          call LJcalc(cx,minimize,success)
 
         case('null')
           cx%vcalc = 0.d0
@@ -329,6 +339,9 @@ contains
 
           case('aims')
             call AIMScalc(cxtemp(i), minimize_mol, success)
+
+          case('LJ')
+            call LJcalc(cxtemp(i),minimize_mol,success)
 
           case('null')
             cxtemp(i)%vcalc = 0.d0
@@ -2177,6 +2190,186 @@ contains
 
     return
   end Subroutine GetMolecularEnergies
+
+  !
+  !*************************************************************************
+  !
+  !> LJcalc
+  !!
+  !! Driver for Lennard-Jones energy and optimization. 
+  !!
+  !! We assume a dimensionless LJ system of units; the "LJ" atomic symbol
+  !! should be used in the input structure file.
+  !!   
+  !! If requested, we use a simple QuickMin minimizer for geometry 
+  !! optimization.
+  !!
+  !! - cx: chemical structure.
+  !! - minimize: Logical flag indicating whether or not to perform
+  !!             geometry optimization
+  !! - success: Logical flag indicating successful calculation.
+  !!
+  !*************************************************************************
+  !
+  Subroutine LJcalc(cx,minimize,success)
+    
+    implicit none
+
+    type(cxs) :: cx
+    logical, intent(in) :: minimize 
+    logical, intent(out) :: success
+    integer :: iter, i, j, k,idof,isum
+    real(8) :: fnorm
+    real(8), parameter :: LJSTEP = 0.4d0                !< Step size for LJ cluster optimization.
+    real(8), parameter :: LJFORCETOL = 1d-3              !< Force convergence.
+    integer, parameter :: LJITERMAX = 2000
+
+    ! Set initial success flag.
+    success = .false.
+
+    ! No minimization - just LJ energy and force calculation.
+    !
+    if (.not.minimize) then
+
+      Call LJEnergyCalc(cx)
+      success = .true.
+
+    else
+
+    ! Minimization using QuickMin algorithm with Euler update.
+    !
+    cx%p(:,:) = 0.d0      ! Zero initial momenta 
+
+    Call LJEnergyCalc(cx)
+
+    do iter = 1, LJITERMAX
+
+        ! Projected momenta
+        call GetProjectedMomenta(cx)
+
+        ! Euler update.
+        !
+        idof = 0
+        do j = 1, cx%na
+            if (.not. cx%fixedatom(j)) then
+                do k = 1, 3
+                  idof = idof + 1
+                  if (.not. cx%FixedDOF(idof)) then
+                    cx%r(k, j) = cx%r(k, j) + LJSTEP * ( cx%p(k, j) / cx%mass(j) )                
+                    cx%p(k, j) = cx%p(k, j) + LJSTEP * cx%force(k, j)
+                  endif
+                enddo
+            else
+                idof = idof + 3
+            endif            
+        enddo
+
+        ! Get new forces:
+        Call LJEnergyCalc(cx)
+
+        ! Assess convergence.
+        fnorm = 0.d0
+        isum = 0
+        do j = 1, cx%na
+            if (.not. cx%fixedatom(j)) then
+                do k = 1, 3
+                  idof = idof + 1
+                  if (.not. cx%FixedDOF(idof)) then
+                    fnorm = fnorm + cx%force(k,j) * cx%force(k,j)
+                    isum = isum + 1
+                  endif
+                enddo
+            else
+                idof = idof + 3
+            endif            
+        enddo
+        fnorm = sqrt(fnorm / isum)
+
+        print*,'ITER = ',iter,fnorm
+
+        if (fnorm .lt. LJFORCETOL) then
+            success = .true.
+            exit
+        endif
+
+    enddo
+
+    endif
+
+
+
+    return
+  end Subroutine LJcalc
+
+
+  !
+  !*************************************************************************
+  !
+  !> LJEnergyCalc
+  !!
+  !! Calculates the Lennard-Jones energy and forces of the system.
+  !!
+  !! We take parameters for Argon from:
+  !! http://www.sklogwiki.org/SklogWiki/index.php/Argon
+  !!   
+  !! Note: For now, this is NOT shifted, and we assume a cutoff of 2.5.
+  !!
+  !! - cx: chemical structure.
+  !!
+  !*************************************************************************
+  !
+  Subroutine LJEnergyCalc(cx)
+    implicit none
+    type(cxs) :: cx
+    real(8) :: energy, dx, dy, dz, drsq, dr, sigma, eps
+    real(8) :: dxr,dyr,dzr,onr,rc,rcsq,sigsq,r6,r12,rr,sigrsq,dv
+    integer :: i, j
+
+    ! Dimensionless LJ potential.
+    sigma = 3.345d0 * ang_to_bohr      ! Sigma value from White - see: http://www.sklogwiki.org/SklogWiki/index.php/Argon
+    sigsq = sigma * sigma
+    eps = 3.98d-4                      ! Epsilon = 125.7 K, converted to Hartrees
+    rc = 2.5d0 * sigma
+    rcsq = rc * rc
+
+    ! Zero derivatives.
+    cx%dvdr(:,:) = 0.d0
+
+    ! Energy pair loop.
+    cx%vcalc = 0.d0
+    do i = 1, cx%na - 1
+        do j = i+1, cx%na
+            dx = cx%r(1,i) - cx%r(1,j)
+            dy = cx%r(2,i) - cx%r(2,j)
+            dz = cx%r(3,i) - cx%r(3,j)
+            drsq = dx*dx + dy*dy + dz*dz
+            if (drsq .le. rcsq) then
+                rr = dsqrt(drsq)
+                onr = 1.d0 / rr
+                sigrsq = sigsq / drsq
+                r6 = sigrsq * sigrsq * sigrsq
+                r12 = r6 * r6   
+                cx%vcalc = cx%vcalc + (4.0 * eps * (r12 - r6))
+                dv = 4.0 * eps * (-12.d0 * r12 + 6.0 * r6) * onr
+                dxr = dv * dx * onr
+                dyr = dv * dy * onr
+                dzr = dv * dz * onr
+                cx%dvdr(1,i) = cx%dvdr(1,i) + dxr
+                cx%dvdr(2,i) = cx%dvdr(2,i) + dyr
+                cx%dvdr(3,i) = cx%dvdr(3,i) + dzr
+                cx%dvdr(1,j) = cx%dvdr(1,j) - dxr
+                cx%dvdr(2,j) = cx%dvdr(2,j) - dyr
+                cx%dvdr(3,j) = cx%dvdr(3,j) - dzr
+            endif
+        enddo
+    enddo
+
+    ! Define forces as negative of derivatives.
+    !
+    cx%force = -cx%dvdr
+    
+    return
+  end Subroutine LJEnergyCalc
 
 
 end module pes

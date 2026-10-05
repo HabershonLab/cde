@@ -15,7 +15,7 @@ Module constants
   implicit none
 
   !
-  ! Useful constants.
+  ! Useful integer constants.
   !
   integer, parameter :: NAMAX = 1000           !< Maximum number of atoms.
   integer, parameter :: NFMAX = 3 * NAMAX     !< Maximum number of DOFs.
@@ -37,8 +37,9 @@ Module constants
   integer, parameter :: NANGLEMAX = 200
   integer, parameter :: NTORSMAX = 300
 
+
   !
-  ! Useful numerical constants.
+  ! Useful floating-point constants.
   !
   real(8), parameter :: bohr_to_ang   = 0.5291772108d0 !< Bohr to Angstrom conversion
   real(8), parameter :: ang_to_bohr   = 1.889726128d0  !< Angstrom to Bohr conversion
@@ -63,7 +64,7 @@ Module constants
   !> Set atomic masses. The MASS index can be referenced by atomic number;
   !! For example, MASS(1) = mass of hydrogen.
   !!
-  real(8),parameter :: MASS(87) = (/1837.1527d0,  &      ! H
+  real(8),parameter :: MASS(88) = (/1837.1527d0,  &      ! H
                                     0.d0,          &    ! He
                                     0.d0,          &    ! Li
                                      0.d0,       &    ! Be
@@ -80,7 +81,7 @@ Module constants
                                     56903.5d0, &             ! P
                                     0.d0, &             ! S
                                     0.d0, &             ! Cl
-                                    0.d0, &             ! Ar
+                                    72847.d0, &             ! Ar
                                     0.d0, &             ! K
                                     0.d0, &             ! Ca
                                     0.d0, &             ! Sc
@@ -149,7 +150,8 @@ Module constants
                                     0.d0, &             ! Po
                                     0.d0, &             ! At
                                     0.d0, &             ! Rn
-                                    50000.0d0/)        ! G1
+                                    50000.d0, &       ! G1
+                                    1.d0 /)              ! LJ - Lennard-Jones particle.
 
 
 
@@ -157,7 +159,7 @@ Module constants
   !! covalent radius of hydrogen. Note that the values are given in Angstroms and
   !! converted into Bohr using the ang_to_bohr conversion.
   !
-  real(8), parameter :: CovRad(87) = (/0.4d0 * ang_to_bohr, &     ! H !! 0.4?
+  real(8), parameter :: CovRad(88) = (/0.4d0 * ang_to_bohr, &     ! H !! 0.4?
                                       0.d0, &                      ! He
                                      0.d0, &                      ! Li
                                      0.d0, &                      ! Be
@@ -175,7 +177,7 @@ Module constants
                                     1.07d0 * ang_to_bohr, &             ! P
                                     1.07d0*ang_to_bohr, &             ! S
                                     0.d0, &             ! Cl
-                                    0.d0, &             ! Ar
+                                    1.88d0 * ang_to_bohr, &             ! Ar
                                     0.d0, &             ! K
                                     0.d0, &             ! Ca
                                     0.d0, &             ! Sc
@@ -244,10 +246,10 @@ Module constants
                                     0.d0, &             ! Po
                                     0.d0, &             ! At
                                     0.d0, &             ! Rn
-                                    1.50d0/)              ! G1
+                                    1.50d0,&              ! G1
+                                    0.6d0/)             ! LJ    
 
-
-  integer,parameter :: AValency(87) = (/1, &             ! H
+  integer,parameter :: AValency(88) = (/1, &             ! H
                                        2, &             ! He
                                        1, &             ! Li
                                        2, &             ! Be
@@ -264,7 +266,7 @@ Module constants
                                        5, &             ! P
                                        6, &             ! S
                                        7, &             ! Cl
-                                       8, &             ! Ar
+                                       12, &             ! Ar
                                        1, &             ! K
                                        2, &             ! Ca
                                        0, &             ! Sc
@@ -333,24 +335,25 @@ Module constants
                                        0, &             ! Po
                                        0, &             ! At
                                        0, &             ! Rn
-                                       10 /)            ! G1
+                                       10,&              ! G1
+                                       10/)            ! LJ
 
 
 
 !  real(8), parameter :: bondingsf = 1.10d0       !< Scale factor applied to covalent radii to
   ! lammps optimises wrong C-H distance if made 1.1
-  real(8), parameter :: bondingsf = 1.20d0       !< Scale factor applied to covalent radii to
+  real(8), parameter :: bondingsf = 1.0d0       !< Scale factor applied to covalent radii to
                                                 !! define bonding. Atoms are bonded if
                                                 !! r(i,j) <= (covrad(i) + covrad(j)) * bondingsf
 
-  real(8), parameter :: bondingrange1 = 0.25d0 * ang_to_bohr   !< Shift range over which atoms are restrained
+  real(8), parameter :: bondingrange1 = 0.15d0 * ang_to_bohr   !< Shift range over which atoms are restrained
                                                              !! in GDS simulations.
 
-  real(8), parameter :: bondingrange2 = -0.10d0 * ang_to_bohr   !< Shift range over which atoms are restrained
+  real(8), parameter :: bondingrange2 = -0.15d0 * ang_to_bohr   !< Shift range over which atoms are restrained
                                                              !! in GDS simulations.
   !
-  real(8), parameter :: RADIUS_MAX = 25.d0 * ang_to_bohr  ! 100?
-  real(8), parameter :: RADIUS_MIN = 12.d0 * ang_to_bohr
+  real(8), parameter :: RADIUS_MAX = 20.d0 * ang_to_bohr  
+  real(8), parameter :: RADIUS_MIN = 8.d0 * ang_to_bohr  
 
   real(8), parameter :: LATTICESTEP = 4.d0 * ang_to_bohr
 

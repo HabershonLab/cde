@@ -378,9 +378,11 @@ contains
     read(10, '(A)') comment
     do i = 1, na
       read(10, *, iostat=ios) label(i), x(i), y(i), z(i)
-      x(i) = x(i) * ang_to_bohr
-      y(i) = y(i) * ang_to_bohr
-      z(i) = z(i) * ang_to_bohr
+      if (label(i) .ne. 'LJ') then
+        x(i) = x(i) * ang_to_bohr
+        y(i) = y(i) * ang_to_bohr
+        z(i) = z(i) * ang_to_bohr
+      endif
     enddo
     call CreateCXS(cx, na, label, x, y, z)
     close(10)
@@ -607,9 +609,15 @@ contains
         stop '* ERROR reading atom list from input file in ReadCXS'
       endif
       cx%atomlabel(i) = label
-      cx%r(1, i) = x * ang_to_bohr
-      cx%r(2, i) = y * ang_to_bohr
-      cx%r(3, i) = z * ang_to_bohr
+      if (cx%atomlabel(i).ne.'LJ') then
+        cx%r(1, i) = x * ang_to_bohr
+        cx%r(2, i) = y * ang_to_bohr
+        cx%r(3, i) = z * ang_to_bohr
+      else
+        cx%r(1, i) = x 
+        cx%r(2, i) = y 
+        cx%r(3, i) = z 
+      endif
     enddo
     close(10)
 
@@ -782,6 +790,8 @@ contains
         !
         Rcut = (CovRad(id1) + covrad(id2)) * BONDINGSF
 
+       ! print*,'WTF: ',id1,id2,rr,Rcut
+
         ! Check that this pair-type have actually been included in
         ! constants.f90
         !
@@ -797,11 +807,11 @@ contains
         if (rr <= rcut) then
           cx%graph(i, j) = 1
           cx%graph(j, i) = 1
-          !print*,'Binding: ',  i,j,cx%atomlabel(i),cx%atomlabel(j),rr,rcut,CovRad(id1),covrad(id2)
+       !   print*,'Bonding: ',  i,j,cx%atomlabel(i),cx%atomlabel(j),rr,rcut,CovRad(id1),covrad(id2)
         else
           cx%graph(i, j) = 0
           cx%graph(j, i) = 0
-          !PRint*,'NON-Binding: ',  i,j,cx%atomlabel(i),cx%atomlabel(j),rr,rcut,CovRad(id1),covrad(id2)
+        !  PRint*,'NON-Bonding: ',  i,j,cx%atomlabel(i),cx%atomlabel(j),rr,rcut,CovRad(id1),covrad(id2)
         endif
       enddo
     enddo
@@ -1260,17 +1270,14 @@ contains
     !
     na = cx%na
 
-    ! Allocate and assign the min / max constraints.
+    ! Allocate and assign the min / max constraints for bonding.
     !
     allocate(rmin(na,na), rmax(na,na))
     do i = 1, na
       do j = i, na
         id1 = LabelToNumber(cx%atomlabel(i))
         id2 = LabelToNumber(cx%atomlabel(j))
-        !rx = ( COVRAD(id1) + COVRAD(id2) )
         rx = BONDINGSF * (COVRAD(id1) + COVRAD(id2))
-        !rmin(i,j) = rx/2.0d0
-        !rmax(i,j) = rx  - BONDINGRANGE1
         rmin(i, j) = rx - BONDINGRANGE1
         rmax(i, j) = rx + BONDINGRANGE2
         rmin(j, i) = rmin(i, j)
@@ -1292,6 +1299,10 @@ contains
         dz = cx%r(3, i) - cx%r(3, j)
         rsq = dx*dx + dy*dy + dz*dz
         rr = sqrt(rsq)
+
+        ! if (i.eq.8.and.j.eq.9) Then
+        ! print*,'i,j,DIST = ',i,j,rr,cx%graph(i,j),cxstart%graph(i,j)
+        ! endif
 
         ! Calculate distance in cxstart.
         !
@@ -1322,12 +1333,31 @@ contains
 
         else if (cx%graph(i, j) == 0 .and. cxstart%graph(i, j) == 1) then     !! BOND BREAKING !!
 
-          ! Gaussian repulsion
+          ! Gaussian repulsion - original
           !
           eterm = exp(-(rr*rr) / (2.0 * nbrange**2))
           cx%vcon = cx%vcon + nbstrength * eterm
           t1 = nbstrength * (-2.0*rr / (2.0 * nbrange**2)) * eterm
           call AccumulateDerivatives(cx, t1, i, j)
+
+
+          ! ! New test - harmonic
+          ! if (rr < 4.d0) then
+
+          !   dr = rr - 4.d0
+          !   cx%vcon = cx%vcon + kspring * dr**2
+          !   t1 = 2.0 * kspring * dr
+
+          !   call AccumulateDerivatives(cx, t1, i, j)
+
+          ! else if (rr > 12.d0 ) then
+          !   dr = rr - 12.d0
+          !   cx%vcon = cx%vcon + kspring * dr**2
+          !   t1 = 2.0 * kspring * dr
+
+          !   call AccumulateDerivatives(cx, t1, i, j)
+
+          ! endif
 
         else if (cx%graph(i, j) == 1 .and. cxstart%graph(i, j) == 1) then
 
@@ -1343,13 +1373,19 @@ contains
 
         else if (cx%graph(i, j) == 0 .and. cxstart%graph(i, j) == 0) then
 
+
           ! Gaussian repulsion with reduced range....
           !
-          factor = 0.8
+          factor = 0.8   ! 0.8
           eterm = exp(-(rr*rr) / (2.0 * (factor*nbrange)**2) )
           cx%vcon = cx%vcon + nbstrength * eterm
           t1 = nbstrength * (-2.0*rr / (2.0 * (factor*nbrange)**2)) * eterm
-          call AccumulateDerivatives(cx, t1, i, j)
+
+         ! eterm = nbstrength * (nbrange / rr)**6
+         ! t1 = nbstrength * 6.d0 * (1.d0/rr) * (nbrange / rr)**6 
+         ! cx%vcon = cx%vcon + nbstrength * eterm
+         ! call AccumulateDerivatives(cx, t1, i, j)
+         
 
         endif
       enddo
@@ -2386,9 +2422,15 @@ contains
     write(13, '(i5)') cx%na
     write(13, *) value
     do j = 1, cx%na
-      x = cx%r(1, j) * bohr_to_ang
-      y = cx%r(2, j) * bohr_to_ang
-      z = cx%r(3, j) * bohr_to_ang
+      if (cx%atomlabel(j).ne.'LJ') then
+        x = cx%r(1, j) * bohr_to_ang
+        y = cx%r(2, j) * bohr_to_ang
+        z = cx%r(3, j) * bohr_to_ang
+      else
+        x = cx%r(1, j) 
+        y = cx%r(2, j) 
+        z = cx%r(3, j)
+      endif 
       write(13,'(a2, 2x, 3(f15.11, 2x))') cx%atomlabel(j), x, y, z
     enddo
     close(13)
